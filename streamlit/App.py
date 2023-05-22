@@ -1,18 +1,7 @@
 '''
-Web App developed as demo for the "Web Visualization Workshop 2023" at Aalto Geoinformatics Research Lab.
-Get familiar with the documentation to get ful capacity of the Web App test.
-
-Author. Bryan R. Vallejo
-
-Data:
-    - OpenCell [Ecuador] CC-BY from: https://opencellid.org/downloads.php
-    - Bike-sharing system stations [Helsinki] CC-BY from: https://hri.fi/data/en_GB/dataset/hsl-n-kaupunkipyoraasemat
-
-Multiapps connected
-    1) Helsinki bike-sharing system
-        - Statistics:       columns, messages, metrics
-        - Visualization:    map layers
-        - Subset:           slider
+The Web App was developed based on a demo introduced in the "Web Visualization Workshop 2023" at Aalto Geoinformatics Research Lab.
+Original author of the demo that was used as a base for this app is Bryan R. Vallejo
+This particular web app was produced ny Matti Pönkänen
 '''
 
 import streamlit as st
@@ -22,46 +11,40 @@ import pandas as pd
 
 ## ___________________ APP _______________________ 
 
-st.set_page_config(page_title="Web Visualization Workshop 2023", 
-                   page_icon="👋", 
+st.set_page_config(page_title="Accessibility web app", 
+                   page_icon="🌍", 
                    layout="centered", 
                    initial_sidebar_state="collapsed")
 
 # info
 st.markdown("""
-            ## ***Web Visualization Workshop 2023***🧐
-            
-        This web app was developed to showcase the capabilities of Streamlit
-        as a User Interactive (UI) framework for scientific communication. 
-        
-        ###### 👈 ***Select a Demo from the sidebar to undertand the capabilities of Streamlit***
-        
-        #### Datasets
-        - [**Helsinki Bike-sharing System Stations**](https://hri.fi/data/en_GB/dataset/hsl-n-kaupunkipyoraasemat)
-    
-            *Helsinki Region Transport's (HSL) city bicycle stations. The maintainer of the dataset 
-            is Helsingin seudun liikenne HSL. The dataset has been downloaded from Helsinki Region 
-            Infoshare service on 20.04.2023 under the license Creative Commons Attribution 4.0.*
-            
-        - [**OpenCellID Antennas Locations in Ecuador**](https://opencellid.org/downloads.php)
+ <div style="display: flex; align-items: center;">
+   <h2 style="margin: 0;">Measuring accessibility equity in Finland with open-sourced GIS-tools</h2>
+   <img style="margin-left: auto;" src="https://raw.githubusercontent.com/ipeaGIT/r5r/master/r-package/man/figures/r5r_blue.png" width="100" height="110">
+ </div>
+ This web app was developed to showcase some of the datasets produced for the research paper. 
+ 
+ ###### 👈 ***From the sidebar you can explore different datasets produced for accessibility equity analysis***
 
-            *OpenCelliD Project is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License*
-            
-        #### Code Repository
-        - [**Web Visualization Code Repository**](https://github.com/AaltoGIS/WebVis-Workshop)
-        
-            *Geoinformatics Department at Aalto University (2023). Licensed under CC-BY.*
-            
-        #### Useful links
-        - [**Google Earth Engine in Streamlit**](https://towardsdatascience.com/monitoring-sea-surface-temperature-at-the-global-level-with-gee-1d7349c7da6?sk=ad86cafc4621810ca75020b830588287)
-            
-            *Monitoring Sea Surface Temperature at the global level with GEE. How to create a Streamlit app for ocean monitoring with Python. By B. R. Vallejo*
-        
-        - [**Satellite Imagery Timelapse in Streamlit**](https://huggingface.co/spaces/giswqs/Streamlit)
-        
-            *An interactive web app for creating Landsat/GOES timelapse for any location around the globe. The app was built using streamlit, geemap, and Google Earth Engine. By Q. Wu.*
-        
-            """)
+ ## Routing engine
+
+ *description*
+
+ ## **Datasets**
+ ##### Opportunity data (destination choice set)
+ - list all data utilized for the equity analysis
+ ##### National grid
+ - list all data utilized for the equity analysis
+ *description*
+ ##### Transport modes
+- list all modes analyzed
+ ##### Code Repository
+ - github repo
+ 
+ *Matti Pönkänen and Geoinformatics Department at Aalto University (2023). Licensed under CC-BY.*
+ 
+ """, unsafe_allow_html=True)
+
 
 
 

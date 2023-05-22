@@ -25,7 +25,7 @@ st.markdown("""
             Be sure that you app is always displaying a map even before you click on the radio button. 
             Also, add a third option that says `None` and it display all data with no subset.
                         
-            ##### **Here a Clue**
+            ##### **Here is a Clue**
             
             First store your radio button function in a variable once you have added the options like:
             
@@ -41,6 +41,7 @@ st.markdown("""
 
 ## _____ SOLUTION _____
 
+print("test")
 
 
 #END

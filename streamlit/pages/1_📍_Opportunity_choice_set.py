@@ -7,22 +7,24 @@ import numpy as np
 ## _____________ HELSINKI BIKES APP __________________ 
 
 # page
-st.set_page_config(page_title="Bike-sharing system stations Helsinki", 
+st.set_page_config(page_title="Opportunity choice-set", 
                    layout="wide", 
                    initial_sidebar_state="expanded")
 
 ## _________________ TABS ________________
-tab1, tab2, tab3 = st.tabs(['Statistics', 'Visualization', 'Subset'])
+tab1, tab2, tab3 = st.tabs(['Number of opportunities', 'Visualization', 'Subset'])
 
 with tab1:
     st.markdown("""
-                ### 🚴‍♂️***Helsinki Bike-Sharing System Stations***
+                ### 📍***Opportunity choice-set***
                 
                 The code in the backend is reading the *Bike stations* layer and sotre it in a variable.
                 You can calculate frequencies or statistics of your data and call them 
                 to the frontend as an informative message.
                 
                 For example, frequencies or statistics like:
+
+                *description of opportunities here*
                 
                 """)
 
