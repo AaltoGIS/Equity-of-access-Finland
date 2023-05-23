@@ -1,5 +1,6 @@
 import streamlit as st
 import geopandas as gpd
+import json
 import pandas as pd 
 import pydeck as pdk
 import numpy as np
@@ -19,7 +20,7 @@ st.markdown("""
             
             """)
 
-# Read in merged shapefile
+# Read in merged shapefilee
 merged_opportunities = gpd.read_file('streamlit/data/merged_opportunities.shp')
 
 # Reproject the data to Web Mercator
@@ -53,7 +54,14 @@ opportunities = filtered_data.groupby(['opprtnt', 'color']).size().reset_index(n
 opportunities = opportunities.rename(columns={'opprtnt': 'Opportunity type'})
 
 # Create a bar chart
-fig = px.bar(opportunities, x='Opportunity type', y='count', color='color', text='count')
+fig = px.bar(
+    opportunities,
+    x='Opportunity type',
+    y='count',
+    color='Opportunity type',
+    text='count',
+    color_discrete_sequence=opportunities['color'].unique()
+)
 
 # Update the layout of the chart
 fig.update_layout(
@@ -82,26 +90,41 @@ view_state = pdk.ViewState(
  zoom=zoom_level,
  pitch=0
 )
-# XXXXXX Need to figure out how to get separate colors for different opportunity points XXXXX
+
+# Convert the filtered_data GeoDataFrame to a GeoJSON object
+geojson_data = json.loads(filtered_data.to_json())
+
+# Add a new property to each feature representing its fill color as an RGBA array
+for feature in geojson_data['features']:
+    # Get the hex color for this feature
+    hex_color = feature['properties']['color']
+    
+    # Convert the hex color to an RGB tuple
+    r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
+    
+    # Add a new property to this feature representing its fill color as an RGBA array
+    feature['properties']['fill_color'] = [r, g, b, 200]
+
 # Create a layer for the selected municipality
 municipality_layer = pdk.Layer(
- 'GeoJsonLayer',
- data=filtered_data,
- get_radius = point_size,
- get_fill_color=[18, 84, 199, 140],
- get_line_color=[0, 0, 0],
- pickable=True,
+    'GeoJsonLayer',
+    data=geojson_data,
+    get_radius=point_size,
+    get_fill_color='properties.fill_color',
+    get_line_color=[0, 0, 0],
+    pickable=True,
 )
+
 
 # Create a deck.gl map
 map = pdk.Deck(
     map_style=map_style,
     initial_view_state=view_state,
     layers=[municipality_layer],
-     tooltip={
-         'html': '<b>Name:</b> {name}',
-         'style': {'backgroundColor': 'steelblue', 'color': 'white'}
-         }
+    tooltip={
+        'html': '<b>Name:</b> {name}',
+        'style': {'backgroundColor': 'steelblue', 'color': 'white'}
+        }
 )
 
 # Display the chart and map in Streamlit using columns

@@ -22,7 +22,7 @@ st.markdown("""
    <h2 style="margin: 0;">Measuring accessibility equity in Finland with open-sourced GIS-tools</h2>
    <img style="margin-left: auto;" src="https://raw.githubusercontent.com/ipeaGIT/r5r/master/r-package/man/figures/r5r_blue.png" width="100" height="110">
  </div>
- This web app was developed to showcase some of the datasets produced for the research paper. 
+ This web app was developed to showcase some of the national datasets produced for the research paper. 
  
  ###### 👈 ***From the sidebar you can explore different datasets produced for accessibility equity analysis***
 

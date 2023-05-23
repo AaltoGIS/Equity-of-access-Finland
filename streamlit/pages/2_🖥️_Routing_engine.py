@@ -31,7 +31,7 @@ st.markdown(
 image = Image.open('streamlit/data/Kuva4.png')
 st.image(image, use_column_width=True)
 
-# Style image max width
+# Style image max widths
 st.markdown(
     """
     <style>
