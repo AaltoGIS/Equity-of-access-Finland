@@ -5,6 +5,7 @@ import pandas as pd
 import pydeck as pdk
 import numpy as np
 import plotly.express as px
+import matplotlib.pyplot as plt
 
 ## _____________ OPPORTUNITY CHOICE-SET __________________ 
 
@@ -16,7 +17,7 @@ st.set_page_config(page_title="Access metrics",
 st.markdown("""
  ### 🚏**Accessibility data**
 
- *description of the accessibility metrics here*
+ *Here is an example where you can compare 30 minute accessibility to schools either with public transport or bicycle*
  
  """)
 
@@ -37,40 +38,66 @@ selected_municipality = st.selectbox('Select a municipality', municipalities)
 
 # Filter the grid data based on the selected municipality
 if selected_municipality != 'Finland':
-    filtered_grid = grid[grid['mncplty'] == selected_municipality]
-    zoom_level = 10
-    point_size = 80
+ filtered_grid = grid[grid['mncplty'] == selected_municipality]
+ zoom_level = 10
+ point_size = 80
 else:
-    filtered_grid = grid
-    zoom_level = 5
-    point_size = 120
+ filtered_grid = grid
+ zoom_level = 5
+ point_size = 120
 
+# Create a selectbox for different modes of transportation
+selected_mode = st.selectbox('Select mode', ['Public transport', 'Bicycle'])
+
+# Map the selected mode to the corresponding column in the data
+mode_column = 'JL_kl30' if selected_mode == 'Public transport' else 'PP_kl30'
+
+# Filter the grid data based on the selected mode
+filtered_grid = filtered_grid[filtered_grid[mode_column] > 0]
+
+# Select only the necessary columns
+filtered_grid = filtered_grid[[mode_column, 'mncplty', 'geometry']]
 
 # Calculate the centroid of the selected municipality's geometry so that map gets to the location of the points
 centroid = filtered_grid.geometry.unary_union.centroid
 
 map_style = 'mapbox://styles/mapbox/light-v10'
 
-# Create a PyDeck map and add the filtered grid data as a layer
+# Create a PyDeck map and add the filtered grid data as a layerr
 view_state = pdk.ViewState(
  latitude=centroid.y,
  longitude=centroid.x,
  zoom=zoom_level,
- pitch=0
+ pitch=50,
 )
+
 
 layer = pdk.Layer(
-    'GeoJsonLayer',
-    data=filtered_grid,
-    get_position='[lon, lat]',
-    pickable=True,
-    auto_highlight=True,
+ 'GeoJsonLayer',
+ data=filtered_grid,
+ get_position='[lon, lat]',
+ get_elevation=mode_column,
+ auto_highlight=True,
+ radius=200,
+ get_fill_color=[255, 255, 'properties.JL_kl30' * 255, 140],
+ elevation_scale=50,
+ elevation_range=[0, 100],
+ pickable=True,
+ extruded=True
 )
 
-view_state = pdk.ViewState(latitude=60.192059, longitude=24.945831, zoom=10)
-map = pdk.Deck(layers=[layer],
-               map_style=map_style,
-               initial_view_state=view_state)
+map = pdk.Deck(
+ layers=[layer],
+ map_style=map_style,
+ initial_view_state=view_state,
+ tooltip={
+  'html': 'Number of accessible schools: <b>{' + mode_column + '}</b>',
+  'style': {
+   'backgroundColor': 'steelblue',
+   'color': 'white'
+  }
+ }
+)
 st.pydeck_chart(map)
 
 # print("here")

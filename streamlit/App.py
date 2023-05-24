@@ -14,7 +14,7 @@ import pandas as pd
 st.set_page_config(page_title="Accessibility web app", 
                    page_icon="🌍", 
                    layout="centered", 
-                   initial_sidebar_state="collapsed")
+                   initial_sidebar_state="auto")
 
 # info
 st.markdown("""

@@ -118,13 +118,16 @@ municipality_layer = pdk.Layer(
 
 # Create a deck.gl map
 map = pdk.Deck(
-    map_style=map_style,
-    initial_view_state=view_state,
-    layers=[municipality_layer],
-    tooltip={
-        'html': '<b>Name:</b> {name}',
-        'style': {'backgroundColor': 'steelblue', 'color': 'white'}
-        }
+ map_style=map_style,
+ initial_view_state=view_state,
+ layers=[municipality_layer],
+ tooltip={
+  'html': 'Name: <b>{name}</b>',
+  'style': {
+   'backgroundColor': 'steelblue',
+   'color': 'white'
+ }
+ }
 )
 
 # Display the chart and map in Streamlit using columns
