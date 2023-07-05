@@ -5,17 +5,18 @@ import pandas as pd
 import pydeck as pdk
 import numpy as np
 import plotly.express as px
+import matplotlib.pyplot as plt
 
 ## _____________ OPPORTUNITY CHOICE-SET __________________ 
 
 # page
-st.set_page_config(page_title="Access metrics", 
+st.set_page_config(page_title="Cumulative metrics", 
  layout="wide", 
  initial_sidebar_state="expanded")
 
 st.markdown("""
- ### 📏**Measuring equity of access**
+ ### 🚏**Accessibility data**
 
- *description how the data can be used to measure equity*
+ *Here lets add a set of different cumulative figures to closest facilities*
  
  """)

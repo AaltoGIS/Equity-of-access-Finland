@@ -45,21 +45,5 @@ st.markdown("""
  
  """, unsafe_allow_html=True)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##END
+# Take a logarithmic to see how results change.  So we see how the results change and are not as clustered. As an interactive version the scatterplot
+# 

@@ -1,14 +1,11 @@
 import streamlit as st
 import geopandas as gpd
-import json
-import pandas as pd 
-import pydeck as pdk
 import numpy as np
 import plotly.express as px
+import folium
+from streamlit_folium import folium_static
+from functions.markdown_functions import responsive_to_window_width
 
-## _____________ OPPORTUNITY CHOICE-SET __________________ 
-
-# page
 st.set_page_config(page_title="Opportunity choice-set", 
                    layout="wide", 
                    initial_sidebar_state="expanded")
@@ -20,119 +17,111 @@ st.markdown("""
             
             """)
 
-# Read in merged shapefilee
 merged_opportunities = gpd.read_file('streamlit/data/merged_opportunities.shp')
 
 # Reproject the data to Web Mercator
 merged_opportunities = merged_opportunities.to_crs('EPSG:4326')
 
-# Get unique values from the 'municipality' column
-municipalities = merged_opportunities['mncplty'].unique()
+opportunity_types = merged_opportunities['opprtnt'].unique()
+selected_types = st.multiselect('Select opportunity types:', opportunity_types)
 
-# Add an "All" option to the municipalities list so that data can be looked at nationally
-municipalities = np.insert(municipalities, 0, 'Finland')
+if not selected_types:
+    st.warning('Please select at least one opportunity type.')
 
-# Create a selectbox for different municipalities
-selected_municipality = st.selectbox('Select a municipality', municipalities)
-
-# Filter the data based on the selected municipality or All
-if selected_municipality == 'Finland':
-    filtered_data = merged_opportunities
-    zoom_level = 5
-    point_size = 120
 else:
-    filtered_data = merged_opportunities[merged_opportunities['mncplty'] == selected_municipality]
-    zoom_level = 10
-    point_size = 80
+    # Get unique values from the 'municipality' column
+    municipalities = merged_opportunities['mncplty'].unique()
 
-#----- CREATING A CHART -----
+    # Add an "All" option to the municipalities list so that data can be looked at nationally
+    municipalities = np.insert(municipalities, 0, 'Finland')
 
-# Summarize the number of each opportunity type for the selected municipality or all
-opportunities = filtered_data.groupby(['opprtnt', 'color']).size().reset_index(name='count')
+    # Create a selectbox for different municipalities
+    selected_municipality = st.selectbox('Select a municipality', municipalities)
 
-# Rename the opportunity column
-opportunities = opportunities.rename(columns={'opprtnt': 'Opportunity type'})
+    # Filter the data based on the selected municipality or All
+    if selected_municipality == 'Finland':
+        filtered_data = merged_opportunities
+        zoom_level = 5
+        point_size = 120
+    else:
+        filtered_data = merged_opportunities[merged_opportunities['mncplty'] == selected_municipality]
+        zoom_level = 10
+        point_size = 80
 
-# Create a bar chart
-fig = px.bar(
-    opportunities,
-    x='Opportunity type',
-    y='count',
-    color='Opportunity type',
-    text='count',
-    color_discrete_sequence=opportunities['color'].unique()
-)
+    # Filter data by selected opportunity types
+    filtered_data = filtered_data[filtered_data['opprtnt'].isin(selected_types)]
 
-# Update the layout of the chart
-fig.update_layout(
- title=f'Number of opportunities in {selected_municipality}',
- title_font_size=24,
- xaxis_title=None,
- yaxis_title=None,
- showlegend=False
-)
+    #----- CREATING A CHART -----
 
-# Update the traces of the chart
-fig.update_traces(textposition='outside')
+    # Summarize the number of each opportunity type for the selected municipality or all
+    opportunities = filtered_data.groupby(['opprtnt', 'color']).size().reset_index(name='count')
 
-#----- CREATING A MAP ALONGSIDE CHART -----
+    # Rename the opportunity column
+    opportunities = opportunities.rename(columns={'opprtnt': 'Opportunity type'})
 
-# Calculate the centroid of the selected municipality's geometry so that map gets to the location of the points
-centroid = filtered_data.geometry.unary_union.centroid
+    # Create a bar chart
+    fig = px.bar(
+        opportunities,
+        x='Opportunity type',
+        y='count',
+        color='Opportunity type',
+        text='count',
+        color_discrete_sequence=opportunities['color'].unique()
+    )
 
-# Set the map style
-map_style = 'mapbox://styles/mapbox/light-v10'
+    # Update the layout of the chart
+    fig.update_layout(
+     title=f'Number of opportunities in {selected_municipality}',
+     title_font_size=24,
+     xaxis_title=None,
+     yaxis_title=None,
+     showlegend=False
+    )
 
-# Set the initial viewport for the map
-view_state = pdk.ViewState(
- latitude=centroid.y,
- longitude=centroid.x,
- zoom=zoom_level,
- pitch=0
-)
+    fig.update_traces(textposition='outside')
 
-# Convert the filtered_data GeoDataFrame to a GeoJSON object
-geojson_data = json.loads(filtered_data.to_json())
+    #----- CREATING A MAP ALONGSIDE CHART -----
 
-# Add a new property to each feature representing its fill color as an RGBA array
-for feature in geojson_data['features']:
-    # Get the hex color for this feature
-    hex_color = feature['properties']['color']
-    
-    # Convert the hex color to an RGB tuple
-    r, g, b = tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
-    
-    # Add a new property to this feature representing its fill color as an RGBA array
-    feature['properties']['fill_color'] = [r, g, b, 200]
+    # Calculate the centroid of the selected municipality's geometry so that map gets to the location of the points
+    centroid = filtered_data.geometry.unary_union.centroid
 
-# Create a layer for the selected municipality
-municipality_layer = pdk.Layer(
-    'GeoJsonLayer',
-    data=geojson_data,
-    get_radius=point_size,
-    get_fill_color='properties.fill_color',
-    get_line_color=[0, 0, 0],
-    pickable=True,
-)
+    # Create a new Folium map centered on the centroid of the selected municipality's geometry
+    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles = "cartodbpositron")
+
+    # Define a function for adding a point layer to the map
+    def add_point_layer(gdf, name, color):
+        # Add CircleMarkers to the map
+        for _, row in gdf.iterrows():
+            folium.CircleMarker(
+                location=[row.geometry.y, row.geometry.x],
+                radius=5,
+                color='white',
+                weight=0.8,
+                fill=True,
+                fill_color=color,
+                fill_opacity=1
+            ).add_child(folium.Tooltip(row['name'])).add_to(m)
 
 
-# Create a deck.gl map
-map = pdk.Deck(
- map_style=map_style,
- initial_view_state=view_state,
- layers=[municipality_layer],
- tooltip={
-  'html': 'Name: <b>{name}</b>',
-  'style': {
-   'backgroundColor': 'steelblue',
-   'color': 'white'
- }
- }
-)
+    # Add a point layer to the map for each opportunity type
+    for opportunity_type in opportunity_types:
+        # Filter the data to only include rows for this opportunity type
+        data = filtered_data[filtered_data['opprtnt'] == opportunity_type]
+        
+        # Check if the data DataFrame is empty
+        if not data.empty:
+            # Get the color for this opportunity type from the first row of data
+            color = data.iloc[0]['color']
+            
+            # Add a point layer to the map for this opportunity type
+            add_point_layer(data, opportunity_type, color)
 
-# Display the chart and map in Streamlit using columns
-col1, col2 = st.columns([1, 1])
-col1.plotly_chart(fig, use_container_width=True)
-col2.pydeck_chart(map, use_container_width=True)
 
+    col1, col2 = st.columns([1, 1])
+    col1.plotly_chart(fig, use_container_width=True)
+
+    responsive_to_window_width()
+    # Display the map in Streamlit
+    with col2:
+        folium_static(m)
 
