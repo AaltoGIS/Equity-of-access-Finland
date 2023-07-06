@@ -89,7 +89,7 @@ else:
     m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles = "cartodbpositron")
 
     # Define a function for adding a point layer to the map
-    def add_point_layer(gdf, name, color):
+    def add_point_layer(gdf, color):
         # Add CircleMarkers to the map
         for _, row in gdf.iterrows():
             folium.CircleMarker(

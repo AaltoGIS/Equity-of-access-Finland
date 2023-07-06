@@ -20,6 +20,8 @@ st.markdown("""
  ### 🚏**Accessibility data**
 
  *Here is an example where you can compare 30 minute accessibility to schools either with public transport or bicycle*
+
+ TODO: scales need to be on same level for each travel time cut-off
  
  """)
 
@@ -35,16 +37,20 @@ municipalities = np.insert(municipalities, 0, 'Finland')
 # Add an empty option to the municipalities list
 municipalities = np.insert(municipalities, 0, '')
 
-# Create a selectbox for different municipalities with an empty option
-selected_municipality = st.selectbox('Select area of interest', municipalities)
+col1, col2 = st.columns([1, 1])
 
-# Create a selectbox for different modes of transportation with an empty option
-selected_mode = st.selectbox('Select mode', ('', 'Public transport', 'Bicycle'))
+with col1:
+    # Create a selectbox for different municipalities with an empty option
+    selected_municipality = st.selectbox('Select area of interest', municipalities)
 
-# Create a selectbox for different opportunity types with an empty option
-opportunity_type = st.selectbox("Select opportunity types:", ("", "Pharmacy", "Grocery store", "Library", "Public sports facility", "School", "Healthcare", "Jobs"))
+    # Create a selectbox for different modes of transportation with an empty option
+    selected_mode = st.selectbox('Select mode', ('', 'Public transport', 'Bicycle'))
 
-travel_time = st.radio("Select travel time cut-off:", ("30 min", "45 min", "60 min"))
+with col2:
+    # Create a selectbox for different opportunity types with an empty option
+    opportunity_type = st.selectbox("Select opportunity types:", ("", "Pharmacy", "Grocery store", "Library", "Public sports facility", "School", "Healthcare", "Jobs"))
+
+    travel_time = st.radio("Select travel time cut-off:", ("30 min", "45 min", "60 min"), horizontal = True)
 
 # Map the selected mode to the corresponding abbreviation in the field name
 mode_abbreviation = 'JL' if selected_mode == 'Public transport' else 'PP'
@@ -112,6 +118,9 @@ if selected_municipality and selected_mode and opportunity_type:
         # Reset the index of the filtered_grid DataFrame
         filtered_grid = filtered_grid.reset_index()
 
+        responsive_to_window_width()
+        
+
         # Add a choropleth layer to the map
         choropleth = folium.Choropleth(
             geo_data=filtered_grid,
@@ -133,8 +142,6 @@ if selected_municipality and selected_mode and opportunity_type:
                 localize=True
             )
         )
-
-        responsive_to_window_width()
 
         folium_static(m, height=800)
 
