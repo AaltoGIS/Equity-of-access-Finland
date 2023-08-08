@@ -1,71 +1,109 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
+import numpy as np
+
 
 ## _____________ OPPORTUNITY CHOICE-SET __________________ 
 
-# page
-st.set_page_config(page_title="Cumulative metrics", 
- layout="wide", 
- initial_sidebar_state="expanded")
+def set_page():
+    st.set_page_config(page_title="Cumulative metrics", 
+    layout="wide", 
+    initial_sidebar_state="expanded")
 
-st.markdown("""
- ### 🚏**Accessibility data**
+    st.markdown("""
+    ### 🚏**Accessibility data**
 
- *Here lets add a set of different cumulative figures to closest facilities*
- 
- """)
+    *Here lets add a set of different cumulative figures to closest facilities*
+    
+    """)
 
-# Read data from CSV files
-data = pd.read_csv('streamlit/data/access_ttm.csv', usecols=lambda col: col != 'geometry')
-data2 = pd.read_csv('streamlit/data/access_ttm_cycling.csv', usecols=lambda col: col != 'geometry')
-grid = pd.read_csv('streamlit/data/grid.csv', usecols=lambda col: col != 'geometry')
+def read_data():
+    # Read data from CSV files
+    pt_data = pd.read_csv('streamlit/data/access_ttm_pt.csv')
+    cycling_data = pd.read_csv('streamlit/data/access_ttm_cycling.csv')
+    grid = pd.read_csv('streamlit/data/grid.csv')
+    # Extract unique values for municipality column
+    municipality = pt_data['nimi'].unique()
+        # Add an option for all municipalities
+    municipality = np.append(municipality, "All municipalities")
+
+    return pt_data, cycling_data, grid, municipality
 
 
-# Extract unique values for municipality column
-municipality = data['kunta'].unique()
-
-# Create multiselect and slider widgets
-col1, col2, col3 = st.columns([2, 0.2, 2])
-
-with col1:
-    options = st.multiselect(
-        'Select a municipality', municipality
+def filter_data(pt_data, cycling_data, grid, municipality):
+    
+    # Create selectbox widget
+    option = st.selectbox(
+        'Select a municipality', municipality, index=len(municipality)-1
     )
 
-with col3:
-    x_axis_length = st.slider(
-        'Select maximum travel-time',
-        min_value=0,
-        max_value=60,
-        value=(0, 60),
-        step=1
+    # Filter data based on selected municipality
+    if option != "All municipalities":
+        pt_data = pt_data[pt_data['nimi'] == option]
+        cycling_data = cycling_data[cycling_data['nimi'] == option]
+        grid = grid[grid['nimi'] == option]
+
+    # Delete negative values from population fields
+    grid.loc[grid['he_7_12'] < 0, 'he_7_12'] = 0
+    grid.loc[grid['he_13_15'] < 0, 'h_13_15'] = 0
+    grid.loc[grid['he_16_17'] < 0, 'h_16_17'] = 0
+
+
+    pt_data.loc[pt_data['he_7_12'] < 0, 'he_7_12'] = 0
+    pt_data.loc[pt_data['h_13_15'] < 0, 'h_13_15'] = 0
+    pt_data.loc[pt_data['h_16_17'] < 0, 'h_16_17'] = 0
+
+    cycling_data.loc[cycling_data['he_7_12'] < 0, 'he_7_12'] = 0
+    cycling_data.loc[cycling_data['h_13_15'] < 0, 'h_13_15'] = 0
+    cycling_data.loc[cycling_data['h_16_17'] < 0, 'h_16_17'] = 0
+
+    # Calculate cumulative share for all travel times
+    max_travel_time = 60
+    cumulative_share_pt = [sum(pt_data.loc[pt_data['trv__50'] <= x, ['he_7_12', 'h_13_15', 'h_16_17']].sum(axis=1)) /
+                            grid[['he_7_12', 'he_13_15', 'he_16_17']].sum().sum() for x in range(0, max_travel_time + 1)]
+    cumulative_share_cycling = [sum(cycling_data.loc[cycling_data['trv__50'] <= x, ['he_7_12', 'h_13_15', 'h_16_17']].sum(axis=1)) /
+                                 grid[['he_7_12', 'he_13_15', 'he_16_17']].sum().sum() for x in range(0, max_travel_time + 1)]
+    
+
+    # Reshape data for plotting
+    data_long = pd.DataFrame({
+        'Travel time': list(range(0, max_travel_time + 1)) * 2,
+        'Population share': cumulative_share_pt + cumulative_share_cycling,
+        'mode': ['Public Transport + 1 000 m walk'] * (max_travel_time + 1) + ['Cycling'] * (max_travel_time + 1),
+        'kunta': [option] * (max_travel_time + 1) * 2
+    })
+
+    fig = create_fig(data_long)
+
+    return fig
+
+
+
+def create_fig(data_long):
+    # Plot cumulative share line graph
+    nimi = data_long['kunta'].iloc[0]
+    fig = px.line(data_long, x='Travel time', y='Population share', color='mode')
+    fig.update_layout(
+        title=f'Accessibility of nearest educational facilities in {nimi}',
+        xaxis_title='Travel time to nearest educational institution (min)',
+        yaxis_title='Cumulative share of 7-17-year-old population (%)',
+        legend_title='Mode'
     )
+    fig.update_yaxes(tickformat='%')
+    return fig
 
-# Filter data based on selected municipalities
-if options:
-    data = data[data['kunta'].isin(options)]
-    data2 = data2[data2['kunta'].isin(options)]
-    grid = grid[grid['kunta'].isin(options)]
 
-# Filter data based on selected maximum travel time
-max_travel_time = x_axis_length[1]
-cumulative_share_pt = [sum(data.loc[data['trv__50'] <= x, ['he_7_12', 'h_13_15', 'h_16_17']].sum(axis=1)) / grid[['he_7_12', 'he_13_15', 'he_16_17']].sum().sum() for x in range(0, max_travel_time + 1)]
-cumulative_share_cycling = [sum(data2.loc[data2['trv__50'] <= x, ['he_7_12', 'h_13_15', 'h_16_17']].sum(axis=1)) / grid[['he_7_12', 'he_13_15', 'he_16_17']].sum().sum() for x in range(0, max_travel_time + 1)]
 
-# Reshape data for plotting
-data_long = pd.DataFrame({
-    'accessibility': list(range(0, max_travel_time + 1)) * 2,
-    'cumulative_share': cumulative_share_pt + cumulative_share_cycling,
-    'mode': ['Public Transport + 1 000 m walk'] * (max_travel_time + 1) + ['Cycling'] * (max_travel_time + 1)
-})
+def main():
+    set_page()
+    try:
+        pt_data, cycling_data, grid, municipality
+    except NameError:
+        pt_data, cycling_data, grid, municipality = read_data()
+    
+    fig = filter_data(pt_data, cycling_data, grid, municipality)
+    st.plotly_chart(fig)
 
-# Plot cumulative share line graph
-fig, ax = plt.subplots(figsize=(6, 4))
-data_long.groupby('mode').plot(x='accessibility', y='cumulative_share', ax=ax)
-ax.legend(['Public Transport + 1 000 m walk', 'Cycling'])
-ax.set_xlabel('Travel time to nearest educational institution (min)')
-ax.set_ylabel('Cumulative share of 7-17-year-old population')
-ax.set_title('Accessibility of nearest educational facilities in the capital region')
-
-st.pyplot(fig)
+if __name__ == "__main__":
+    main()

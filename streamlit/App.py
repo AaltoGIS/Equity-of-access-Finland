@@ -5,8 +5,6 @@ This particular web app was produced ny Matti Pönkänen
 '''
 
 import streamlit as st
-import geopandas as gpd
-import pandas as pd 
 
 
 ## ___________________ APP _______________________ 

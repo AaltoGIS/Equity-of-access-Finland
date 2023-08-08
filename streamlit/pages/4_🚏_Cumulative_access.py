@@ -52,6 +52,9 @@ with col2:
 
     travel_time = st.radio("Select travel time cut-off:", ("30 min", "45 min", "60 min"), horizontal = True)
 
+    # Add a checkbox to the Streamlit app
+    use_same_intervals = st.checkbox('Use the 60 minute class intervals for all cut-offs')
+
 # Map the selected mode to the corresponding abbreviation in the field name
 mode_abbreviation = 'JL' if selected_mode == 'Public transport' else 'PP'
 
@@ -74,15 +77,12 @@ if selected_municipality and selected_mode and opportunity_type:
         # Construct the field name based on the selected values
         mode_column = f'{mode_abbreviation}_{opportunity_type_abbreviation}{travel_time_value}'
 
-        # Check if data for the selected municipality has already been loaded
+        # Check if data for the selected municipality has already been loaded to session state
         if f'data_{selected_municipality}' not in st.session_state:
             # Define the columns to read in
             columns = ['mncplty', 'geometry'] + [f'{mode_abbreviation}_{opp}{time}' for opp in ['aptk', 'ruok', 'kirja', 'lahi', 'koul', 'sair', 'tyo'] for time in ['30', '45', '60']]
 
-            # Read in shapefile
             grid = gpd.read_file('streamlit/data/accessibility.shp', columns=columns)
-
-            # Reproject the data to Web Mercator
             grid = grid.to_crs('EPSG:4326')
 
             # Filter the grid data based on the selected municipality
@@ -103,6 +103,20 @@ if selected_municipality and selected_mode and opportunity_type:
             # Set the zoom level based on the selected municipality
             zoom_level = 10 if selected_municipality != 'Finland' else 7
 
+        if use_same_intervals:
+            # Calculate the maximum value of the 60-minute column for appropriate class bins
+            max_value = filtered_grid[f'{mode_abbreviation}_{opportunity_type_abbreviation}60'].max()
+
+            # Define the bins based on the maximum value
+            bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
+        else:
+            # Calculate the maximum value of the selected travel time cut-off column for appropriate class bins
+            max_value = filtered_grid[mode_column].max()
+
+            # Define the bins based on the maximum value
+            bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
+
+
         # Filter the grid data based on the selected mode, opportunity type, and travel time cut-off
         filtered_grid = filtered_grid[filtered_grid[mode_column] > 0]
 
@@ -119,9 +133,8 @@ if selected_municipality and selected_mode and opportunity_type:
         filtered_grid = filtered_grid.reset_index()
 
         responsive_to_window_width()
-        
 
-        # Add a choropleth layer to the map
+        # Add a choropleth layer to the map with fixed bins
         choropleth = folium.Choropleth(
             geo_data=filtered_grid,
             name='choropleth',
@@ -131,8 +144,10 @@ if selected_municipality and selected_mode and opportunity_type:
             fill_color='YlGn',
             fill_opacity=0.6,
             line_opacity=0,
-            legend_name=f'Number of accessible {opportunity_type.lower()}'
+            legend_name=f'Number of accessible {opportunity_type.lower()}',
+            bins=bins
         ).add_to(m)
+
 
         # Add a tooltip to the choropleth layer
         choropleth.geojson.add_child(

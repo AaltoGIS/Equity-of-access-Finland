@@ -114,7 +114,7 @@ else:
             color = data.iloc[0]['color']
             
             # Add a point layer to the map for this opportunity type
-            add_point_layer(data, opportunity_type, color)
+            add_point_layer(data, color)
 
 
     col1, col2 = st.columns([1, 1])
