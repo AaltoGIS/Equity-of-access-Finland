@@ -10,12 +10,12 @@ def set_page():
                     layout="wide", 
                     initial_sidebar_state="expanded")
 
-    st.markdown("""
-                ### 📍**Opportunity choice-set**
+    st.markdown('''
+    ### **Opportunity choice-set** 🌍
 
-                *description of opportunities here*
-                
-                """)
+    <span style="font-size: 18px;">With the tool below you can explore the distribution of different opportunities that one might consider important in their daily lives. It also contains the opportunity choice set used in the accessibility analysis of this paper. First select the opportunities you want to be displayed. Then the distribution of these opportunities across Finland. After that you can select specific municipalities to explore.</span>
+    ''', unsafe_allow_html=True)
+
 def read_data():
     data = gpd.read_file('streamlit/data/merged_opportunities.shp')
     # Reproject the data to Web Mercator
@@ -28,7 +28,7 @@ def filter_and_create_charts(data):
 
     if not selected_types:
         return None
-
+    
     else:
         # Get unique values from the 'municipality' column
         municipalities = data['mncplty'].unique()
@@ -42,7 +42,7 @@ def filter_and_create_charts(data):
             zoom_level = 5
         else:
             filtered_data = data[data['mncplty'] == selected_municipality]
-            zoom_level = 10
+            zoom_level = 9
         # Filter data by selected opportunity types
         filtered_data = filtered_data[filtered_data['opprtnt'].isin(selected_types)]
         m, fig = create_charts(selected_municipality, filtered_data,zoom_level,opportunity_types)
@@ -50,7 +50,12 @@ def filter_and_create_charts(data):
         return m, fig
 
 
-def create_charts(selected_municipality, filtered_data, zoom_level,opportunity_types):
+def create_charts(selected_municipality, filtered_data, zoom_level, opportunity_types):
+    # Read kunnat2023 shapefile
+    municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.shp')
+    # Reproject the data to WGS84
+    municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
+    
     # Summarize the number of each opportunity type for the selected municipality or all
     opportunity_sums = filtered_data.groupby(['opprtnt', 'color']).size().reset_index(name='count')
     # Rename the opportunity column
@@ -67,18 +72,34 @@ def create_charts(selected_municipality, filtered_data, zoom_level,opportunity_t
     )
     # Update the layout of the chart
     fig.update_layout(
-    title=f'Number of opportunities in {selected_municipality}',
-    title_font_size=24,
-    xaxis_title=None,
-    yaxis_title=None,
-    showlegend=False
+        title=f'Number of opportunities in {selected_municipality}',
+        title_font_size=24,
+        xaxis_title=None,
+        yaxis_title=None,
+        showlegend=False
     )
     fig.update_traces(textposition='outside')
 
     #----- CREATING A MAP ALONGSIDE CHART -----
     # Calculate the centroid of the selected municipality's geometry so that map gets to the location of the points
     centroid = filtered_data.geometry.unary_union.centroid
-    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles = "cartodbpositron")
+    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles="cartodbpositron")
+    
+    # Add a polygon layer to the map for the selected municipality
+    if selected_municipality != 'Finland':
+        # Filter municipality polygons based on selected municipality
+        filtered_polygons = municipality_polygons[municipality_polygons['nimi'] == selected_municipality]
+        # Add polygon layer to map
+        folium.GeoJson(
+            filtered_polygons,
+            style_function=lambda feature: {
+                'fillColor': 'transparent',
+                'color': 'black',
+                'weight': 1,
+                'fillOpacity': 0,
+            }
+        ).add_to(m)
+    
     # Add a point layer to the map for each opportunity type
     for opportunity_type in opportunity_types:
         # Filter the data to only include rows for this opportunity type
@@ -90,6 +111,7 @@ def create_charts(selected_municipality, filtered_data, zoom_level,opportunity_t
             add_point_layer(data, color, m)
 
     return m, fig
+
 
 # Define a function for adding a point layer to the map
 # Add a point layer to the map for this opportunity type
@@ -114,6 +136,35 @@ def responsive_to_window_width():
     """
     st.markdown(making_map_responsive, unsafe_allow_html=True)
 
+def add_description():
+    st.markdown('''
+    ### **Methodology**
+
+    <span style="font-size: 18px;">The data of the different opportunities has been collected from different sources, either from readily available open databases or webscraped
+    and then geocoded by using python scripts. The data used here is from year 2021.</span>
+
+    ''', unsafe_allow_html=True)
+    
+    st.markdown("""
+        <div>
+        <b>Pharmacies:</b>  
+                    <div style="margin-left: 20px;">Association of Finnish Pharmacies | https://www.apteekki.fi/apteekkihaku.html</div>
+        <b>Grocery shops:</b> 
+                    <div style="margin-left: 20px;">Grocery shop websites | https://www.s-kaupat.fi/myymalat, https://www.k-ruoka.fi/k-citymarket?kaupat, https://www.lidl.fi/c/myymaelaet/s10021311,  https://www.m-ketju.fi/myymalat/</div>
+        <b>Libraries:</b>
+                    <div style="margin-left: 20px;">OpenStreetMap contributors</div>
+        <b>Public sports facilities:</b>
+            <div style="margin-left: 20px;">University of Jyväskylä, lipas.fi</div>
+        <b>Healthcare</b>
+            <div style="margin-left: 20px;">Finnish institute of health and welfare</div>
+        <b>Educational facilities</b>
+            <div style="margin-left: 20px;">Statistics Finland | https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html</div>
+        
+        </div>
+
+        
+        """, unsafe_allow_html=True)
+
 def main():
     set_page()
     data = read_data()
@@ -131,7 +182,7 @@ def main():
     else:
         # Handle the case where filter_and_create_charts returns None
         st.warning('Please select at least one opportunity type.')
-
+    add_description()
 
 if __name__ == "__main__":
     main()

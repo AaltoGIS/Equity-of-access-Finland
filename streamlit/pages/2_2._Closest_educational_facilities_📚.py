@@ -15,14 +15,13 @@ def set_page():
     layout="wide", 
     initial_sidebar_state="expanded")
 
-    st.markdown("""
-    ### 📚✏️**Closest educational facilities**
+    st.markdown('''
+    ### **Closest educational facilities**📚✏️
 
-    With the app below you can compare access differences between different Finnish municipalities. The figure plots the cumulative share of 7-17 old population against the travel time it takes 
-    to reach nearest educational facility, either with cycling or public transport. From the dropdown menu, select the municipality you want to analyze. By hovering over the cumulative figure
-    you can see a popup appear that has more detailed information. Methodology is described in more detail below the graphs.
-    <br><br>
-    """)
+    <span style="font-size: 18px;">With this tool you can compare access differences between different Finnish municipalities. The figure plots the cumulative share of 7-17 old population against the travel time it takes 
+    to reach nearest educational facility for that particular population, either with cycling or public transport. <b style="color: #845EB8;">From the dropdown menu, select the municipality you want to analyze. By hovering over the cumulative figure
+    you can see a popup appear that has more detailed information.</b></span>
+    ''', unsafe_allow_html=True)
 
 def read_data():
     # Read data from CSV files
@@ -93,7 +92,7 @@ def filter_data(pt_data, cycling_data, grid):
 def create_fig(data_long):
     # Plot cumulative share line graph
     nimi = data_long['kunta'].iloc[0]
-    fig = px.line(data_long, x='travel_time', y='access', color='mode', custom_data=['mode'])
+    fig = px.line(data_long, x='travel_time', y='access', color='mode', custom_data=['mode'], color_discrete_sequence=['#DD6E82', '#845EB8'])
     fig.update_layout(
         title=f'Accessibility of nearest educational facilities in {nimi}',
         xaxis_title='Travel time to nearest educational institution (min)',
@@ -111,12 +110,12 @@ def create_fig(data_long):
             tickfont=dict(size=14)
         )
     )
-    fig.update_traces(hovertemplate='Travel time to nearest educational institution <b>%{x} min</b><br>Share of population that can access nearest opportunity: <b>%{y}</b>')
+    fig.update_traces(hovertemplate='Travel time to nearest educational institution <b>%{x} min</b><br>Share of population that can access nearest facility: <b>%{y}</b>')
     fig.update_yaxes(tickformat='.0%')
     return fig
 
 
-def create_map(municipality, selected_municipality):
+def create_map(selected_municipality):
     municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.shp')
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
 
@@ -131,32 +130,44 @@ def create_map(municipality, selected_municipality):
     m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles="cartodbpositron")
 
     # Add filtered polygons to map
-    folium.GeoJson(filtered_polygons).add_to(m)
+    folium.GeoJson(filtered_polygons, style_function=style_polygon).add_to(m)
     responsive_to_window_width()
     # Display map
     folium_static(m)
 
+def style_polygon(_):
+    return {
+        'fillColor': '#845EB8',
+        'color': '#845EB8'
+    }
+
 def add_description():
-    st.markdown("""
+    st.markdown('''
     ### **Methodology**
-    The data on this page has been created by using [R5R](https://github.com/ipeaGIT/r5r) to generate a travel time matrix between the central coordinates of the
+
+    <span style="font-size: 18px;"> The data on this page has been created by using the travel time matrix function of [R5R](https://github.com/ipeaGIT/r5r) to generate a travel time matrix between the central coordinates of the
     [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html) and coordinates of [Finnish educational institutions](https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html).
     up to 60 minutes. Based on the created travel time matrix, minimum travel cost to closest facilities has been calculated by using the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility).
-    
-    **For cycling the following parameters were used:**\n
-    Level of traffic stress (LTS) tolerated by cyclist: 2 *(more info on LTS-values: https://docs.conveyal.com/learn-more/traffic-stress)*\n
-    Cycling speed: 15 km/h\n
-    Cycling speed for network sections that exceed the set LTS-value: 3.6 km/h (walking speed)\n
-    
-    **For public transport the following parameters were used:**\n
-    Departure time window: 7-7:30 am    *(more info on departure time window: https://ipeagit.github.io/r5r/articles/time_window.html)*\n
-    Maximum number of transfers per public transport trip: 1\n
-    Maximum distance one can walk to access, egress or transfer on a public transport trip: 1 km (for each leg of the journey)
-    
-    
-    
-    """)
+    </span>
+    <br><br>
+    <b style="font-size: 18px;">For cycling the following parameters were used:</b><br>
+    <ul>
+        <li>Level of traffic stress (LTS) tolerated by cyclist: 2 <i>(more info on LTS-values: https://docs.conveyal.com/learn-more/traffic-stress)</i></li>
+        <li>Cycling speed: 15 km/h</li>
+        <li>Cycling speed for network sections that exceed the set LTS-value: 3.6 km/h (walking speed)</li>
+    </ul>
 
+    <b style="font-size: 18px;">For public transport the following parameters were used:</b><br> 
+    <ul>
+        <li>Departure time window: 7-7:30 am  <i>(more info on departure time window: https://ipeagit.github.io/r5r/articles/time_window.html)</i></li>
+        <li>Maximum number of transfers per public transport trip: 1</li>
+        <li>Maximum distance one can walk to access, egress or transfer on a public transport trip: 1 km (for each leg of the journey)</li>
+    </ul>
+
+
+
+    ''', unsafe_allow_html=True)
+    
 def main():
     set_page()
     try:
@@ -169,7 +180,7 @@ def main():
     with col1:
         st.plotly_chart(fig, use_container_width=True, responsive=True)
     with col2:
-        create_map(municipality, st.session_state.selected_municipality)
+        create_map(st.session_state.selected_municipality)
 
     add_description()
 
