@@ -12,12 +12,12 @@ from streamlit_folium import folium_static
 
 
 def set_page():
-    st.set_page_config(page_title="Access metrics", 
+    st.set_page_config(page_title="Cumulative access", 
     layout="wide", 
     initial_sidebar_state="expanded")
 
     st.markdown('''
-    ### **Accessibility data**🚌
+    ### **Cumulative access** 🚌
 
     <span style="font-size: 18px;">This tool allows you to explore and compare the cumulative number of opportunities accessible by public transport or bicycle in different municipalities across Finland. Start by selecting your area of interest and the type of opportunity you want to investigate. The tool will then display a map showing the distribution of access to the selected opportunity. You can also choose to view access at different travel time cut-offs and compare the results. <b style="color: #845EB8;">For more consistent comparisons across different travel times, you can opt to use the same 60-minute class intervals for each cut-off</b>.</span> 
                 
@@ -86,7 +86,6 @@ def filter_and_create_charts(municipalities):
         # Reset the index of the filtered_grid DataFrame
         filtered_grid = filtered_grid.reset_index()
 
-
         m = create_map(m, bins, filtered_grid, opportunity_type, mode_column)
         return m
     else:
@@ -122,7 +121,7 @@ def select_columns(travel_time, mode_abbreviation, opportunity_type_abbreviation
                 # Retrieve the loaded data from session state
                 filtered_grid = st.session_state[f'data_{selected_municipality}']
 
-                # Set the zoom level based on the selected municipality
+                # Set the zoom level based on the selection
                 zoom_level = 10 if selected_municipality != 'Finland' else 7
 
             if use_same_intervals:

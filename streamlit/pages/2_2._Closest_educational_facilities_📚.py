@@ -16,11 +16,11 @@ def set_page():
     initial_sidebar_state="expanded")
 
     st.markdown('''
-    ### **Closest educational facilities**📚✏️
+    ### **Closest educational facilities** 📚✏️
 
     <span style="font-size: 18px;">With this tool you can compare access differences between different Finnish municipalities. The figure plots the cumulative share of 7-17 old population against the travel time it takes 
-    to reach nearest educational facility for that particular population, either with cycling or public transport. <b style="color: #845EB8;">From the dropdown menu, select the municipality you want to analyze. By hovering over the cumulative figure
-    you can see a popup appear that has more detailed information.</b></span>
+    to reach nearest educational facility for that particular population, either with cycling or public transport. <b style="color: #845EB8;">From the dropdown menu, select the municipalities you want to analyze. By default the graph displays All municipalities. By hovering over the cumulative figure
+    you can see a popup appear that has more detailed information.</b></span><br><br>Add a table to rank different municipalities and a way to compare different municipalities.
     ''', unsafe_allow_html=True)
 
 def read_data():
@@ -30,8 +30,6 @@ def read_data():
     grid = pd.read_csv('streamlit/data/grid.csv')
     # Extract unique values for municipality column
     municipality = pt_data['nimi'].unique()
-    # Add an option for all municipalities
-    municipality = np.insert(municipality, 0, "All municipalities")
     # Store municipality variable in st.session_state
     st.session_state.municipality = municipality
 
@@ -43,16 +41,17 @@ def filter_data(pt_data, cycling_data, grid):
     if 'selected_municipality' not in st.session_state:
         st.session_state.selected_municipality = "All municipalities"
 
-    option = st.selectbox(
-        'Select a municipality', st.session_state.municipality, key='selected_municipality'
+    options = st.multiselect(
+        'Select municipalities', st.session_state.municipality, key='selected_municipalities'
     )
 
 
-    # Filter data based on selected municipality
-    if option != "All municipalities":
-        pt_data = pt_data[pt_data['nimi'] == option].copy()
-        cycling_data = cycling_data[cycling_data['nimi'] == option].copy()
-        grid = grid[grid['nimi'] == option].copy()
+    # Filter data based on selected municipalities
+    if options:
+        pt_data = pt_data[pt_data['nimi'].isin(options)].copy()
+        cycling_data = cycling_data[cycling_data['nimi'].isin(options)].copy()
+        grid = grid[grid['nimi'].isin(options)].copy()
+
 
     # Delete negative values from population fields
     grid.loc[grid['he_7_12'] < 0, 'he_7_12'] = 0
@@ -79,7 +78,7 @@ def filter_data(pt_data, cycling_data, grid):
         'travel_time': list(range(0, max_travel_time + 1)) * 2,
         'access': cumulative_share_pt + cumulative_share_cycling,
         'mode': ['Public Transport + 1 000 m walk'] * (max_travel_time + 1) + ['Cycling'] * (max_travel_time + 1),
-        'kunta': [option] * (max_travel_time + 1) * 2
+        'kunta': [options] * (max_travel_time + 1) * 2
     })
 
     fig = create_fig(data_long)
@@ -91,7 +90,7 @@ def filter_data(pt_data, cycling_data, grid):
 
 def create_fig(data_long):
     # Plot cumulative share line graph
-    nimi = data_long['kunta'].iloc[0]
+    nimi = ', '.join(data_long['kunta'].iloc[0]) if data_long['kunta'].iloc[0] else "All municipalities"
     fig = px.line(data_long, x='travel_time', y='access', color='mode', custom_data=['mode'], color_discrete_sequence=['#DD6E82', '#845EB8'])
     fig.update_layout(
         title=f'Accessibility of nearest educational facilities in {nimi}',
@@ -115,13 +114,15 @@ def create_fig(data_long):
     return fig
 
 
-def create_map(selected_municipality):
+
+
+def create_map(selected_municipalities):
     municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.shp')
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
 
     # Select municipalities where the field in 'nimi' is same in municipality and municipality polygons and insert it to filtered_polygons
-    if selected_municipality != "All municipalities":
-        filtered_polygons = municipality_polygons[municipality_polygons['nimi'] == selected_municipality]
+    if selected_municipalities:
+        filtered_polygons = municipality_polygons[municipality_polygons['nimi'].isin(selected_municipalities)]
         zoom_level = 7
     else:
         filtered_polygons = municipality_polygons
@@ -135,6 +136,7 @@ def create_map(selected_municipality):
     # Display map
     folium_static(m)
 
+
 def style_polygon(_):
     return {
         'fillColor': '#845EB8',
@@ -146,7 +148,7 @@ def add_description():
     ### **Methodology**
 
     <span style="font-size: 18px;"> The data on this page has been created by using the travel time matrix function of [R5R](https://github.com/ipeaGIT/r5r) to generate a travel time matrix between the central coordinates of the
-    [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html) and coordinates of [Finnish educational institutions](https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html).
+    [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html) and coordinates of [Finnish educational institutions](https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html)
     up to 60 minutes. Based on the created travel time matrix, minimum travel cost to closest facilities has been calculated by using the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility).
     </span>
     <br><br>
@@ -170,19 +172,24 @@ def add_description():
     
 def main():
     set_page()
-    try:
-        pt_data, cycling_data, grid, municipality
-    except NameError:
+    if 'municipality' not in st.session_state:
         pt_data, cycling_data, grid, municipality = read_data()
+    else:
+        try:
+            pt_data, cycling_data, grid, municipality
+        except NameError:
+            pt_data, cycling_data, grid, municipality = read_data()
     
     fig = filter_data(pt_data, cycling_data, grid)
     col1, col2 = st.columns([2.3,1])
     with col1:
         st.plotly_chart(fig, use_container_width=True, responsive=True)
     with col2:
-        create_map(st.session_state.selected_municipality)
+        with st.spinner(text="Loading map..."):
+            create_map(st.session_state.selected_municipalities)
 
     add_description()
+
 
 if __name__ == "__main__":
     main()

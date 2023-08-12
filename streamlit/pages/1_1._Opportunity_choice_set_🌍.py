@@ -80,37 +80,38 @@ def create_charts(selected_municipality, filtered_data, zoom_level, opportunity_
     )
     fig.update_traces(textposition='outside')
 
-    #----- CREATING A MAP ALONGSIDE CHART -----
-    # Calculate the centroid of the selected municipality's geometry so that map gets to the location of the points
-    centroid = filtered_data.geometry.unary_union.centroid
-    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles="cartodbpositron")
+    with st.spinner(text="Loading map..."):
+        #----- CREATING A MAP ALONGSIDE CHART -----
+        # Calculate the centroid of the selected municipality's geometry so that map gets to the location of the points
+        centroid = filtered_data.geometry.unary_union.centroid
+        m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles="cartodbpositron")
+        
+        # Add a polygon layer to the map for the selected municipality
+        if selected_municipality != 'Finland':
+            # Filter municipality polygons based on selected municipality
+            filtered_polygons = municipality_polygons[municipality_polygons['nimi'] == selected_municipality]
+            # Add polygon layer to map
+            folium.GeoJson(
+                filtered_polygons,
+                style_function=lambda feature: {
+                    'fillColor': 'transparent',
+                    'color': 'black',
+                    'weight': 1,
+                    'fillOpacity': 0,
+                }
+            ).add_to(m)
     
-    # Add a polygon layer to the map for the selected municipality
-    if selected_municipality != 'Finland':
-        # Filter municipality polygons based on selected municipality
-        filtered_polygons = municipality_polygons[municipality_polygons['nimi'] == selected_municipality]
-        # Add polygon layer to map
-        folium.GeoJson(
-            filtered_polygons,
-            style_function=lambda feature: {
-                'fillColor': 'transparent',
-                'color': 'black',
-                'weight': 1,
-                'fillOpacity': 0,
-            }
-        ).add_to(m)
-    
-    # Add a point layer to the map for each opportunity type
-    for opportunity_type in opportunity_types:
-        # Filter the data to only include rows for this opportunity type
-        data = filtered_data[filtered_data['opprtnt'] == opportunity_type]
-        # Check if the data DataFrame is empty
-        if not data.empty:
-            # Get the color for this opportunity type from the first row of data
-            color = data.iloc[0]['color']
-            add_point_layer(data, color, m)
+        # Add a point layer to the map for each opportunity type
+        for opportunity_type in opportunity_types:
+            # Filter the data to only include rows for this opportunity type
+            data = filtered_data[filtered_data['opprtnt'] == opportunity_type]
+            # Check if the data DataFrame is empty
+            if not data.empty:
+                # Get the color for this opportunity type from the first row of data
+                color = data.iloc[0]['color']
+                add_point_layer(data, color, m)
 
-    return m, fig
+        return m, fig
 
 
 # Define a function for adding a point layer to the map
