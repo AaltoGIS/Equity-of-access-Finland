@@ -19,7 +19,7 @@ def set_page():
     st.markdown('''
     ### **Cumulative access** 🚌
 
-    <span style="font-size: 18px;">This tool allows you to explore and compare the cumulative number of opportunities accessible by public transport or bicycle in different municipalities across Finland. Start by selecting your area of interest and the type of opportunity you want to investigate. The tool will then display a map showing the distribution of access to the selected opportunity. You can also choose to view access at different travel time cut-offs and compare the results. <b style="color: #845EB8;">For more consistent comparisons across different travel times, you can opt to use the same 60-minute class intervals for each cut-off</b>.</span> 
+    <span style="font-size: 18px;">This tool allows you to explore and compare the cumulative number of opportunities accessible by public transport or bicycle in different municipalities across Finland. Start by selecting your area of interest and the type of opportunity you want to investigate. The tool will then display a map showing the distribution of access to the selected opportunity. You can also choose to view access at different travel time cut-offs and compare the results. <b style="color: #845EB8;">For more consistent comparisons across different travel times, you can opt to use the same 60-minute class intervals for each cut-off</b> GIVE AN EXPLAINER HERE TO POINT OUT THAT OPPORTUNITIES OUTSIDE MUNICIPAL BORDERS ARE ALSO CONSIDERED (ALSO GIVE REFERENCE TO WHY IT SHOULD BE SO, ALSO FIX DIFFERENT DEPARTURE TIMES).</span> 
                 
     <span style="color: #845EB8; font-size: 18px;"><i>Please note that selecting ‘Finland’ as a whole may result in considerable longer loading times.</i></span>
 
