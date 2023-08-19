@@ -203,7 +203,7 @@ def create_fig(data_long):
 
 
 def create_map(selected_municipalities):
-    municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.shp')
+    municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.gpkg')
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
 
     # Select municipalities where the field in 'nimi' is same in municipality and municipality polygons and insert it to filtered_polygons
@@ -222,7 +222,7 @@ def create_map(selected_municipalities):
     geojson.add_child(folium.features.GeoJsonTooltip(fields=['nimi'], aliases=['']))
     responsive_to_window_width()
     # Display map
-    folium_static(m)
+    folium_static(m, height=400)
 
 def style_polygon(_):
     return {
@@ -239,7 +239,7 @@ def highlight_polygon(_):
     }
 
 def create_comparison_map():
-    municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.shp')
+    municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.gpkg')
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
 
     # Select municipalities where the field in 'nimi' is same in municipality and municipality polygons and insert it to filtered_polygons
@@ -254,7 +254,7 @@ def create_comparison_map():
     geojson.add_child(folium.features.GeoJsonTooltip(fields=['nimi'], aliases=['']))
     responsive_to_window_width()
     # Display map
-    folium_static(m)
+    folium_static(m, height=600)
 
 def highlight_comparison_polygon(feature):
     return {

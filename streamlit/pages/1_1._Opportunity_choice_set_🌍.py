@@ -17,7 +17,7 @@ def set_page():
     ''', unsafe_allow_html=True)
 
 def read_data():
-    data = gpd.read_file('streamlit/data/merged_opportunities.shp')
+    data = gpd.read_file('streamlit/data/opportunities.gpkg')
     # Reproject the data to Web Mercator
     data = data.to_crs('EPSG:4326')
     return data
@@ -52,7 +52,7 @@ def filter_and_create_charts(data):
 
 def create_charts(selected_municipality, filtered_data, zoom_level, opportunity_types):
     # Read kunnat2023 shapefile
-    municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.shp')
+    municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.gpkg')
     # Reproject the data to WGS84
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
     

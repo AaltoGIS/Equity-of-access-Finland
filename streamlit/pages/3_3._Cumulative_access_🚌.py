@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import folium
 import branca.colormap as cm
 from streamlit_folium import folium_static
+import time
+
 
 
 
@@ -26,6 +28,19 @@ def set_page():
     ''', unsafe_allow_html=True)
 
 def read_data():
+    # Check if data for Finland has already been loaded to session state
+    if 'data_Finland' not in st.session_state:
+        with st.spinner(text="Loading data..."):
+            # Define the columns to read in
+            print("starting to load grid")
+            start_time = time.time()
+            grid = gpd.read_file('streamlit/data/grid.gpkg', encoding='utf-8')
+            end_time = time.time()
+            print(f"Data loading time: {end_time - start_time:.2f} seconds")
+            grid = grid.to_crs('EPSG:4326')
+            # Store the loaded data in session state for reuse
+            st.session_state['data_Finland'] = grid
+
     # Read in unique_mncplty.csv
     municipalities = pd.read_csv('streamlit/data/unique_mncplty.csv')
 
@@ -41,8 +56,8 @@ def read_data():
     return municipalities
 
 
-def filter_and_create_charts(municipalities):
 
+def filter_and_create_charts(municipalities):
     col1, col2 = st.columns([1, 1])
 
     with col1:
@@ -54,10 +69,11 @@ def filter_and_create_charts(municipalities):
         travel_time = st.radio("Select travel time cut-off:", ("30 min", "45 min", "60 min"), horizontal = True)
         use_same_intervals = st.checkbox('Use the 60 minute class intervals for all cut-offs')
 
-    # Map the selected mode to the corresponding abbreviation in the field name
-    mode_abbreviation = 'JL' if selected_mode == 'Public transport' else 'PP'
+    # Check if all required values have been selected by the user and the grid data has been loaded into session state
+    if selected_municipality and selected_mode and opportunity_type and 'data_Finland' in st.session_state:
+        # Map the selected mode to the corresponding abbreviation in the field name
+        mode_abbreviation = 'JL' if selected_mode == 'Public transport' else 'PP'
 
-    if selected_municipality and selected_mode and opportunity_type:
         # Map the selected opportunity type to the corresponding abbreviation in the field name
         opportunity_type_abbreviation = {
             'Pharmacy': 'aptk',
@@ -91,53 +107,42 @@ def filter_and_create_charts(municipalities):
     else:
         return None
 
+
     
 
 def select_columns(travel_time, mode_abbreviation, opportunity_type_abbreviation, selected_municipality, use_same_intervals):
-        with st.spinner(text="Loading map..."):
-            # Map the selected travel time cut-off to the corresponding value in the field name
-            travel_time_value = travel_time.split()[0]
-            # Construct the field name based on the selected values
-            mode_column = f'{mode_abbreviation}_{opportunity_type_abbreviation}{travel_time_value}'
-            
-            # Check if data for the selected municipality has already been loaded to session state
-            if f'data_{selected_municipality}' not in st.session_state:
-                # Define the columns to read in
-                columns = ['mncplty', 'geometry'] + [f'{mode_abbreviation}_{opp}{time}' for opp in ['aptk', 'ruok', 'kirja', 'lahi', 'koul', 'sair', 'tyo'] for time in ['30', '45', '60']]
-                grid = gpd.read_file('streamlit/data/accessibility.shp', columns=columns)
-                grid = grid.to_crs('EPSG:4326')
-                # Filter the grid data based on the selected municipality
-                if selected_municipality != 'Finland':
-                    filtered_grid = grid[grid['mncplty'] == selected_municipality]
-                    zoom_level = 10
-                else:
-                    filtered_grid = grid
-                    zoom_level = 7
+    with st.spinner(text="Loading map..."):
+        # Map the selected travel time cut-off to the corresponding value in the field name
+        travel_time_value = travel_time.split()[0]
+        # Construct the field name based on the selected values
+        mode_column = f'{mode_abbreviation}_{opportunity_type_abbreviation}{travel_time_value}'
+        
+        # Retrieve the loaded data from session state
+        grid = st.session_state['data_Finland']
+        # Filter the grid data based on the selected municipality
+        if selected_municipality != 'Finland':
+            filtered_grid = grid[grid['mncplty'] == selected_municipality]
+            zoom_level = 10
+        else:
+            filtered_grid = grid
+            zoom_level = 7
 
-                # Store the loaded data in session state for reuse
-                st.session_state[f'data_{selected_municipality}'] = filtered_grid
+        if use_same_intervals:
+            # Calculate the maximum value of the 60-minute column for appropriate class bins
+            max_value = filtered_grid[f'{mode_abbreviation}_{opportunity_type_abbreviation}60'].max()
 
-            else:
-                # Retrieve the loaded data from session state
-                filtered_grid = st.session_state[f'data_{selected_municipality}']
+            # Define the bins based on the maximum value
+            bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
+        else:
+            # Calculate the maximum value of the selected travel time cut-off column for appropriate class bins
+            max_value = filtered_grid[mode_column].max()
 
-                # Set the zoom level based on the selection
-                zoom_level = 10 if selected_municipality != 'Finland' else 7
+            # Define the bins based on the maximum value
+            bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
 
-            if use_same_intervals:
-                # Calculate the maximum value of the 60-minute column for appropriate class bins
-                max_value = filtered_grid[f'{mode_abbreviation}_{opportunity_type_abbreviation}60'].max()
+        return zoom_level, bins, mode_column, filtered_grid
 
-                # Define the bins based on the maximum value
-                bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
-            else:
-                # Calculate the maximum value of the selected travel time cut-off column for appropriate class bins
-                max_value = filtered_grid[mode_column].max()
 
-                # Define the bins based on the maximum value
-                bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
-
-            return zoom_level, bins, mode_column, filtered_grid
 
 def create_map(m, bins, filtered_grid, opportunity_type, mode_column):
     # Create a custom color map using a built-in color map from the branca library
@@ -210,9 +215,9 @@ def add_description():
 def main():
     set_page()
     municipalities = read_data()
+    responsive_to_window_width()
     m = filter_and_create_charts(municipalities)
     if m is not None:
-        responsive_to_window_width()
         folium_static(m, height=800)
     else:
         st.warning('Please select area of interest, mode of transportation, and opportunity type')
