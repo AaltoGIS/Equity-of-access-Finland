@@ -2,15 +2,15 @@ import streamlit as st
 import pandas as pd
 import geopandas as gpd
 import plotly.express as px
-import numpy as np
 import folium
 from streamlit_folium import folium_static
 from functions.markdown_functions import responsive_to_window_width
 
 
-## _____________ OPPORTUNITY CHOICE-SET __________________ 
-
 def set_page():
+    """
+    Sets the page and gives the introduction to the tool.
+    """    
     st.set_page_config(page_title="Cumulative metrics", 
     layout="wide", 
     initial_sidebar_state="expanded")
@@ -18,18 +18,26 @@ def set_page():
     st.markdown('''
     ### **Closest educational facilities** 📚✏️
 
-    <span style="font-size: 18px;">With this tool you can compare access differences between different Finnish municipalities. The figure plots the cumulative share of 7-17 old population against the travel time it takes 
-    to reach nearest educational facility for that particular population, either with cycling or public transport. <b style="color: #845EB8;">From the dropdown menu, select the municipalities you want to analyze. By default the graph displays All municipalities. By hovering over the cumulative figure
-    you can see a popup appear that has more detailed information.</b></span><br><br>Add a table to rank different municipalities and a way to compare different municipalities. MOVE THE CHECKBOX TO MAIN() TO CREATE A STATE WHEN THE COMPARISON IS MADE --> THEN CREATE TWO DIFFERENT FILTERING STATES. ALSO EXPLAIN THAT OPPORTUNITIES ARE ALWAYS CONSIDERED OUTSIDE MUNICIPAL BOUDNARIES
+    <span style="font-size: 18px;">With this tool, you can compare the accessibility of educational facilities in different Finnish municipalities. The figure displays the cumulative share of the population aged 7-17 against the minimum travel time required to reach the nearest educational facility, either by cycling or public transport. This dataset considers all educational facilities for all origin locations, not just within municipal boundaries. To use the app, select the municipalities you want to analyze from the dropdown menu. By default, the graph displays data for all municipalities. To compare different selections, click the checkbox and select the municipalities you want to compare. When you hover your mouse over the cumulative figure, a popup will appear with more detailed information.</span><br>
+             
     ''', unsafe_allow_html=True)
 
 def read_data():
-    # Read data from CSV files
+    """
+    Reads nearest facility data needed to create cumulative figures
+
+    Returns:
+        pt_data: Contains nearest educational facility travel time data (by public transport)
+        cycling_data: Contains nearest educational facility travel time data (by cycling)
+        grid: Contains population data
+        municipality: 
+
+    """    
     pt_data = pd.read_csv('streamlit/data/access_ttm_pt.csv')
     cycling_data = pd.read_csv('streamlit/data/access_ttm_cycling.csv')
     grid = pd.read_csv('streamlit/data/grid.csv')
     # Extract unique values for municipality column
-    municipality = pt_data['nimi'].unique()
+    municipality = cycling_data['nimi'].unique()
     # Store municipality variable in st.session_state
     st.session_state.municipality = municipality
 
@@ -37,7 +45,20 @@ def read_data():
 
 
 def filter_data(pt_data, cycling_data, grid):
-    
+    """
+    Filters the data based on the selected municipalities and creates a figure.
+
+    This function filters the public transportation, cycling, and population data based on the selected municipalities. It then creates a DataFrame with cumulative share data for public transportation and cycling using the `create_df` function. Finally, it creates a figure using the `create_fig` function.
+
+    Args:
+        pt_data: A DataFrame with public transportation data.
+        cycling_data: A DataFrame with cycling data.
+        grid: A DataFrame with population data.
+        selected_municipalities: A list of selected municipalities.
+
+    Returns:
+        A figure displaying the cumulative share of public transportation and cycling for the selected municipalities.
+    """
     if 'selected_municipality' not in st.session_state:
         st.session_state.selected_municipality = "All municipalities"
     col1, _ = st.columns([2,2])
@@ -58,6 +79,19 @@ def filter_data(pt_data, cycling_data, grid):
     return fig
 
 def filter_comparison_data(pt_data, cycling_data, grid):
+    """
+    Filters the data based on two sets of selected municipalities and creates a comparison figure.
+
+    This function allows the user to select two sets of municipalities using Streamlit's `multiselect` widget. It then filters the public transportation, cycling, and population data based on the selected municipalities. The function creates two DataFrames with cumulative share data for public transportation and cycling using the `create_df` function. Finally, it creates a comparison figure using the `create_comparison_fig` function.
+
+    Args:
+        pt_data: A DataFrame with public transportation data.
+        cycling_data: A DataFrame with cycling data.
+        grid: A DataFrame with population data.
+
+    Returns:
+        A comparison figure displaying the cumulative share of public transportation and cycling for the two sets of selected municipalities.
+    """    
     col1, col2 = st.columns([2,2])
 
     with col1:
@@ -99,41 +133,53 @@ def filter_comparison_data(pt_data, cycling_data, grid):
 
 
 def create_df(pt_data, cycling_data, grid, options):
-        # Delete negative values from population fields
-        grid.loc[grid['he_7_12'] < 0, 'he_7_12'] = 0
-        grid.loc[grid['he_13_15'] < 0, 'he_13_15'] = 0
-        grid.loc[grid['he_16_17'] < 0, 'he_16_17'] = 0
+    """Create a DataFrame with cumulative share data for public transportation and cycling.
 
+    This function calculates the cumulative share of public transportation (PT) and cycling for a range of travel times from 0 to max_travel_time. The result is stored in a DataFrame with columns for travel time, access, mode, and kunta.
 
-        pt_data.loc[pt_data['he_7_12'] < 0, 'he_7_12'] = 0
-        pt_data.loc[pt_data['h_13_15'] < 0, 'h_13_15'] = 0
-        pt_data.loc[pt_data['h_16_17'] < 0, 'h_16_17'] = 0
+    Args:
+        pt_data: A DataFrame with public transportation data.
+        cycling_data: A DataFrame with cycling data.
+        grid: A DataFrame with population data.
+        options: A list of options for the kunta column.
 
-        cycling_data.loc[cycling_data['he_7_12'] < 0, 'he_7_12'] = 0
-        cycling_data.loc[cycling_data['h_13_15'] < 0, 'h_13_15'] = 0
-        cycling_data.loc[cycling_data['h_16_17'] < 0, 'h_16_17'] = 0
-
-        # Calculate cumulative share for all travel times
-        max_travel_time = 60
-        cumulative_share_pt = [sum(pt_data.loc[pt_data['trv__50'] <= x, ['he_7_12', 'h_13_15', 'h_16_17']].sum(axis=1)) /
+    Returns:
+        A DataFrame with cumulative share data for public transportation and cycling.
+    """
+    max_travel_time = 60
+    cumulative_share_pt = [sum(pt_data.loc[pt_data['trv__50'] <= x, ['he_7_12', 'h_13_15', 'h_16_17']].sum(axis=1)) /
+                            grid[['he_7_12', 'he_13_15', 'he_16_17']].sum().sum() for x in range(0, max_travel_time + 1)]
+    cumulative_share_cycling = [sum(cycling_data.loc[cycling_data['trv__50'] <= x, ['he_7_12', 'h_13_15', 'h_16_17']].sum(axis=1)) /
                                 grid[['he_7_12', 'he_13_15', 'he_16_17']].sum().sum() for x in range(0, max_travel_time + 1)]
-        cumulative_share_cycling = [sum(cycling_data.loc[cycling_data['trv__50'] <= x, ['he_7_12', 'h_13_15', 'h_16_17']].sum(axis=1)) /
-                                    grid[['he_7_12', 'he_13_15', 'he_16_17']].sum().sum() for x in range(0, max_travel_time + 1)]
 
-        mode_pt = ['Public transport + 1 000 m walk'] * (max_travel_time + 1)
-        mode_cycling = ['Cycling'] * (max_travel_time + 1)
+    mode_pt = ['Public transport + 1 000 m walk'] * (max_travel_time + 1)
+    mode_cycling = ['Cycling'] * (max_travel_time + 1)
 
-        data_long = pd.DataFrame({
-            'travel_time': list(range(0, max_travel_time + 1)) * 2,
-            'access': cumulative_share_pt + cumulative_share_cycling,
-            'mode': mode_pt + mode_cycling,
-            'kunta': [', '.join(options)] * (max_travel_time + 1) * 2
-        })
+    data_long = pd.DataFrame({
+        'travel_time': list(range(0, max_travel_time + 1)) * 2,
+        'access': cumulative_share_pt + cumulative_share_cycling,
+        'mode': mode_pt + mode_cycling,
+        'kunta': [', '.join(options)] * (max_travel_time + 1) * 2
+    })
 
-        return data_long
+    return data_long
 
 
 def create_comparison_fig(data_long1, data_long2, options1, options2):
+    """
+    Creates a comparison figure displaying the cumulative share of access with public transportation and cycling for two sets of selected municipalities.
+
+    This function takes two DataFrames with cumulative share data for public transportation and cycling, one for each set of selected municipalities. It uses the Plotly Express `line` function to create a comparison figure displaying the cumulative share of public transportation access and cycling access for the two sets of selected municipalities.
+
+    Args:
+        data_long1: A DataFrame with cumulative share data for public transportation and cycling for the first set of selected municipalities.
+        data_long2: A DataFrame with cumulative share data for public transportation and cycling for the second set of selected municipalities.
+        options1: A list of selected municipalities for the first set.
+        options2: A list of selected municipalities for the second set.
+
+    Returns:
+        fig: A comparison figure displaying the cumulative share of public transportation and cycling for the two sets of selected municipalities.
+    """    
     if len(options1) > 3 or len(options2) > 3:
         data_long = pd.concat([data_long1.assign(comparison='Selection 1'), data_long2.assign(comparison='Selection 2')])
         fig = px.line(data_long, x='travel_time', y='access', color='comparison', line_dash='mode',
@@ -171,6 +217,17 @@ def create_comparison_fig(data_long1, data_long2, options1, options2):
 
 
 def create_fig(data_long):
+    """
+    Creates a figure displaying the cumulative share of public transportation access and cycling access to schools for a set of selected municipalities.
+
+    This function takes a DataFrame with cumulative share data for public transportation and cycling. It uses the Plotly Express `line` function to create a figure displaying the cumulative share of public transportation and cycling for the selected municipalities.
+
+    Args:
+        data_long: A DataFrame with cumulative share data for public transportation and cycling for the selected municipalities.
+
+    Returns:
+        fig: A figure displaying the cumulative share of public transportation and cycling for the selected municipalities.
+    """
     # Plot cumulative share line graph
     nimi = ', '.join(data_long['kunta'].iloc[0]) if isinstance(data_long['kunta'].iloc[0], list) else data_long['kunta'].iloc[0] or "All municipalities"
     if len(nimi.split(',')) > 3:
@@ -203,16 +260,26 @@ def create_fig(data_long):
 
 
 def create_map(selected_municipalities):
-    municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.gpkg')
-    municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
+    """
+    Creates a map displaying the selected municipalities.
 
+    This function takes a list of selected municipalities and creates a map using the Folium library. The map displays the selected municipalities as polygons. If no municipalities are selected, the map displays the entire country of Finland.
+
+    Args:
+        selected_municipalities: A list of selected municipalities.
+
+    """
     # Select municipalities where the field in 'nimi' is same in municipality and municipality polygons and insert it to filtered_polygons
     if selected_municipalities:
+        municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.gpkg')
+        municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
         filtered_polygons = municipality_polygons[municipality_polygons['nimi'].isin(selected_municipalities)]
         zoom_level = 7
     else:
-        filtered_polygons = municipality_polygons
-        zoom_level = 5
+        finland_polygons = gpd.read_file('streamlit/data/suomi.gpkg')
+        finland_polygons = finland_polygons.to_crs('EPSG:4326')
+        filtered_polygons = finland_polygons
+        zoom_level = 4
     centroid = filtered_polygons.geometry.unary_union.centroid
     m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles="cartodbpositron")
 
@@ -239,6 +306,11 @@ def highlight_polygon(_):
     }
 
 def create_comparison_map():
+    """
+    Creates a comparison map displaying two sets of selected municipalities.
+
+    This function allows the user to select two sets of municipalities using Streamlit's `multiselect` widget. It then creates a map using the Folium library. The map displays the two sets of selected municipalities as polygons in different colors.
+    """    
     municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.gpkg')
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
 
@@ -251,7 +323,7 @@ def create_comparison_map():
     # Add filtered polygons to map
     geojson = folium.GeoJson(filtered_polygons, style_function=style_comparison_polygon, highlight_function=highlight_comparison_polygon).add_to(m)
     # Add tooltip to display 'nimi' attribute on hover
-    geojson.add_child(folium.features.GeoJsonTooltip(fields=['nimi'], aliases=['']))
+    geojson.add_child(folium.features.GeoJsonTooltip(fields=['nimi'], aliases=['Municipality:']))
     responsive_to_window_width()
     # Display map
     folium_static(m, height=600)
@@ -278,12 +350,14 @@ def style_comparison_polygon(polygon):
         }
 
 def add_description():
+    """
+    Adds a methodology description
+    """   
     st.markdown('''
     ### **Methodology**
 
-    <span style="font-size: 18px;"> The data on this page has been created by using the travel time matrix function of [R5R](https://github.com/ipeaGIT/r5r) to generate a travel time matrix between the central coordinates of the
-    [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html) and coordinates of [Finnish educational institutions](https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html)
-    up to 60 minutes. Based on the created travel time matrix, minimum travel cost to closest facilities has been calculated by using the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility).
+    <span style="font-size: 18px;"> The data on this page has been created by using the travel time matrix function of [R5R](https://github.com/ipeaGIT/r5r) to generate a 60 minute travel time matrix between the central coordinates of the 1 km x 1 km
+    [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html) and coordinates of [Finnish educational institutions](https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html). For more details on the spatial distribution of education see <b>1. Spatial distribution of opportunities </b> 🌍. Based on the created travel time matrix, minimum travel cost to closest facilities has been calculated by using the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility). In the calculation, all educational facilities are considered for each location, not just wihtin municipal boundaries. This is because people do not tend to move within just the boundaries of municipalities, but consider opportunities within their daily mobility areas.
     </span>
     <br><br>
     <b style="font-size: 18px;">For cycling the following parameters were used:</b><br>
@@ -314,7 +388,7 @@ def main():
         except NameError:
             pt_data, cycling_data, grid, municipality = read_data()
     
-    # Align the checkbox to the right side of the screen
+
     col1, _ = st.columns([2, 6])
     with col1:
         compare = st.checkbox('Compare municipalities')
