@@ -183,11 +183,11 @@ def create_comparison_fig(data_long1, data_long2, options1, options2):
     if len(options1) > 3 or len(options2) > 3:
         data_long = pd.concat([data_long1.assign(comparison='Selection 1'), data_long2.assign(comparison='Selection 2')])
         fig = px.line(data_long, x='travel_time', y='access', color='comparison', line_dash='mode',
-                      color_discrete_sequence=['#DD6E82', '#845EB8'])
+                      color_discrete_sequence=['#DD6E82', '#476dbf'])
     else:
         data_long = pd.concat([data_long1, data_long2])
         fig = px.line(data_long, x='travel_time', y='access', color='kunta', line_dash='mode',
-                      color_discrete_sequence=['#DD6E82', '#845EB8'])
+                      color_discrete_sequence=['#DD6E82', '#476dbf'])
     fig.update_layout(
         title='Accessibility of nearest educational facilities',
         xaxis_title='Travel time to nearest educational institution (min)',
@@ -232,7 +232,7 @@ def create_fig(data_long):
     nimi = ', '.join(data_long['kunta'].iloc[0]) if isinstance(data_long['kunta'].iloc[0], list) else data_long['kunta'].iloc[0] or "All municipalities"
     if len(nimi.split(',')) > 3:
         nimi = "selection"
-    fig = px.line(data_long, x='travel_time', y='access', color='mode', custom_data=['mode'], color_discrete_sequence=['#DD6E82', '#845EB8'])
+    fig = px.line(data_long, x='travel_time', y='access', color='mode', custom_data=['mode'], color_discrete_sequence=['#DD6E82', '#476dbf'])
     fig.update_layout(
         # title=f'Accessibility of nearest educational facilities in: {nimi}',
         title=f'Accessibility of nearest educational facilities in {nimi}',
@@ -293,16 +293,16 @@ def create_map(selected_municipalities):
 
 def style_polygon(_):
     return {
-        'fillColor': '#845EB8',
-        'color': '#845EB8'
+        'fillColor': '#DD6E82',
+        'color': '#DD6E82'
     }
 
 def highlight_polygon(_):
     return {
         'fillOpacity': 0.7,
         'weight': 3,
-        'fillColor': '#845EB8',
-        'color': '#845EB8'
+        'fillColor': '#DD6E82',
+        'color': '#DD6E82'
     }
 
 def create_comparison_map():
@@ -332,8 +332,8 @@ def highlight_comparison_polygon(feature):
     return {
         'fillOpacity': 0.7,
         'weight': 3,
-        'fillColor': '#DD6E82' if feature['properties']['nimi'] in st.session_state.selected_municipalities1 else '#845EB8',
-        'color': '#DD6E82' if feature['properties']['nimi'] in st.session_state.selected_municipalities1 else '#845EB8'
+        'fillColor': '#DD6E82' if feature['properties']['nimi'] in st.session_state.selected_municipalities1 else '#476dbf',
+        'color': '#DD6E82' if feature['properties']['nimi'] in st.session_state.selected_municipalities1 else '#476dbf'
     }
 
 
@@ -345,8 +345,8 @@ def style_comparison_polygon(polygon):
         }
     elif polygon['properties']['nimi'] in st.session_state.selected_municipalities2:
         return {
-            'fillColor': '#845EB8',
-            'color': '#845EB8'
+            'fillColor': '#476dbf',
+            'color': '#476dbf'
         }
 
 def add_description():

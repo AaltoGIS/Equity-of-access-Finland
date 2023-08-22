@@ -16,7 +16,7 @@ def set_page():
     st.markdown('''
     ### **Measuring equity of access** 📏
 
-    <span style="font-size: 18px;">This tool allows you to compare the equity of access between different municipalities in Finland, by using Palma ratio. The Palma ratio is calculated using the national cumulative accessibility distribution of opportunities (found on page <b>3. Cumulative access</b>🚌). In this context the ratio measures the average accessibility of the top 10% income residents within a municipality divided by the average accessibility of the bottom 40% income residents. A higher Palma ratio indicates greater equity difference in access when income changes. For example, a Palma ratio of 10 means that the top 10% income residents have 10 times better access than the bottom 40% income residents. <br><br><i><b>Note:</b> In the map and table below some municipalities are not present. This is the case when there are not enough data points or the access is at an equilibrium (in this case this usually means there are no access with the particular modes). Some municipalities also contain extream differences, particularly in municipalities that have a large surface area and low population density.</i></span><br><br>
+    <span style="font-size: 18px;">This tool allows you to compare the equity of access between different municipalities in Finland, by using Palma ratio. The Palma ratio is calculated using the national cumulative accessibility distribution of opportunities (found on page <b>3. Cumulative access of opportunities </b>🚌). In this context the ratio measures the average accessibility of the top 10% income residents within a municipality divided by the average accessibility of the bottom 40% income residents. A higher Palma ratio indicates greater equity difference in access when income changes. For example, a Palma ratio of 10 means that the top 10% income residents have 10 times better access than the bottom 40% income residents. <br><br><i><b>Note:</b> In the map and table below some municipalities are not present. This is the case when there are not enough data points or the access is at an equilibrium (in this case this usually means there are no access with the particular modes). Some municipalities also contain extream differences, particularly in municipalities that have a large surface area and low population density.</i></span><br><br>
 
     ''', unsafe_allow_html=True)
 
@@ -186,7 +186,7 @@ def add_description():
     st.markdown('''
     ### **Methodology**
 
-    <span style="font-size: 18px;">Palma ratio is calculated by using the palma_ratio() function of the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility). The function uses the cumulative access dataset (found on page <b>3. Cumulative access</b>🚌) and the mean income of population within each grid cell found in the [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html).  Results are grouped and calculated for each municipality.</span>
+    <span style="font-size: 18px;">Palma ratio is calculated by using the palma_ratio() function of the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility). The function uses the cumulative access dataset (found on page <b>3. Cumulative access of opportunities </b>🚌) and the mean income of population within each grid cell found in the [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html).  Results are grouped and calculated for each municipality.</span>
 
     ''', unsafe_allow_html=True)
     
