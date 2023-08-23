@@ -16,7 +16,7 @@ def set_page():
     st.markdown('''
     ### **Spatial distribution of opportunities** 🌍
 
-    <span style="font-size: 18px;">With the tool below you can explore the distribution of different opportunities that one might consider important in their daily lives. It also contains the opportunity choice set used in the accessibility analysis of this paper. First select the opportunities you want to be displayed. Then the distribution of these opportunities across Finland. After that you can select specific municipalities to explore. These opportunities are used to create different accessibility datasets found on the other pages of this app.</span>
+    <span style="font-size: 18px;">With the tool below you can explore the distribution of different opportunities that most people consider necessities in their daily lives. It also contains the opportunity choice set used in the accessibility analysis of this paper. First select the opportunities you want to be displayed. Then the distribution of these opportunities across Finland. After that you can select specific municipalities to explore. These opportunities are used to create different accessibility datasets found on the other pages of this app.</span>
     ''', unsafe_allow_html=True)
 
 def read_data():

@@ -1,11 +1,8 @@
 import streamlit as st
-from PIL import Image
 import pandas as pd
 import numpy as np
 
-## _____________ Routing engine __________________ 
 
-# page
 st.set_page_config(page_title="Routing engine", 
                    layout="wide", 
                    initial_sidebar_state="expanded")
@@ -20,7 +17,6 @@ In a typical analysis setting the R5R package demonstrates high efficiency. Part
  """)
 
 
-# Style image max widths
 st.markdown(
     """
     <style>
@@ -32,8 +28,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
-# Example dataframe
 outputdframe = pd.DataFrame(
     [
         ["R5R version: 1.0.0", "AMD Ryzen 7 PRO 4750U 1.7 GHZ"],
@@ -44,7 +38,6 @@ outputdframe = pd.DataFrame(
     columns=['Software versions', 'Computer specifications']
 )
 
-# style
 th_props = [
     ('font-size', '16px'),
     ('text-align', 'center'),
@@ -67,7 +60,6 @@ styles = [
     dict(selector="table, th, td", props=[('border', '1px solid white')])
 ]
 
-# color function
 def color_cells1(x):
     c1 = 'background-color: #efe6fc'
     c2 = 'background-color: #EFEBE1'
@@ -76,7 +68,6 @@ def color_cells1(x):
     df1.iloc[:, 1] = c2
     return df1
 
-# table
 df1 = outputdframe.style.apply(color_cells1, axis=None).set_properties(**{'text-align': 'left'}).set_table_styles(styles)
 
 outputdframe = pd.DataFrame(
@@ -89,13 +80,13 @@ outputdframe = pd.DataFrame(
             ["Number of edges (connections)", "2 909 608", "157 644"],
             ["Building a routable network", "552 seconds (9 min)", "41 seconds"],
             ["Calculating travel time matrix up to 60 minutes (Public transport)", "3 292 seconds (55 min)", "8 seconds"],
-            ["Calculating cumulative access for one opportunity type", "2 624 seconds (44 min)", "6 seconds"]
+            ["Calculating cumulative access for one opportunity type for three travel time thresholds", "2 624 seconds (44 min)", "6 seconds"]
         ]
     ),
     columns=['', 'Nation', 'Region (Pirkanmaa)']
 )
 
-# style
+
 th_props = [
     ('font-size', '16px'),
     ('text-align', 'center'),

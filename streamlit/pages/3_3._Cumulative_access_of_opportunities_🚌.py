@@ -20,7 +20,7 @@ def set_page():
     st.markdown('''
     ### **Cumulative access of opportunities** 🚌
 
-    <span style="font-size: 18px;">This tool allows you to explore and compare the cumulative number of opportunities accessible by public transport or bicycle in different municipalities across Finland. Start by selecting your area of interest and the type of opportunity you want to investigate. The tool will then display a map showing the distribution of access to the selected opportunity. You can also choose to view access at different travel time cut-offs and compare the results. For more consistent comparisons across different travel times, you can opt to use the same 60-minute class intervals for each cut-off. <br><br><i>Note: Opportunities (trip destinations) are always considered also outside municipal boundaries. This is because people do not tend to move just within  the boundaries of municipalities, but consider opportunities within their daily mobility areas.</i></span> 
+    <span style="font-size: 18px;">This tool allows you to explore and compare the cumulative number of opportunities accessible by public transport or bicycle in different municipalities across Finland. Start by selecting your area of interest and the type of opportunity you want to investigate. The tool will then display a map showing the distribution of access to the selected opportunity. You can also choose to view access at different travel time cut-offs and compare the results. For more consistent comparisons across different travel times, you can opt to use the same 60-minute class intervals for each cut-off. <br><br><i><b>Note:</b> Opportunities (trip destinations) are always considered also outside municipal boundaries. This is because people do not tend to move just within  the boundaries of municipalities, but consider opportunities within their daily mobility areas.</i></span> 
 
     ''', unsafe_allow_html=True)
 
@@ -72,10 +72,10 @@ def filter_and_create_charts(municipalities):
 
     with col1:
         selected_municipality = st.selectbox('Select area of interest', municipalities,)
-        selected_mode = st.selectbox('Select mode', ('Public transport + 1 000 m walk', 'Bicycle'))
+        selected_mode = st.selectbox('Select mode', ('','Public transport + 1 000 m walk', 'Bicycle'))
 
     with col2:
-        opportunity_type = st.selectbox("Select opportunity type:", ("Pharmacy", "Grocery store", "Library", "Public sports facility", "School", "Healthcare", "Jobs"))
+        opportunity_type = st.selectbox("Select opportunity type:", ("","Pharmacy", "Grocery store", "Library", "Public sports facility", "School", "Healthcare", "Jobs"))
         travel_time = st.radio("Select travel time cut-off:", ("30 min", "45 min", "60 min"), horizontal = True)
         use_same_intervals = st.checkbox('Use the 60 minute class intervals for all cut-offs', True)
 
@@ -139,36 +139,33 @@ def select_columns(travel_time_value, mode_abbreviation, opportunity_type_abbrev
 
     """
     
-    with st.spinner(text="Loading map..."):
-        # Map the selected travel time cut-off to the corresponding value in the field name
-        
-        # Construct the field name based on the selected values
-        mode_column = f'{mode_abbreviation}_{opportunity_type_abbreviation}{travel_time_value}'
-        
-        # Retrieve the loaded data from session state
-        grid = st.session_state['data_Finland']
-        # Filter the grid data based on the selected municipality
-        if selected_municipality != 'Finland':
-            filtered_grid = grid[grid['mncplty'] == selected_municipality]
-            zoom_level = 10
-        else:
-            filtered_grid = grid
-            zoom_level = 7
+    # Construct the field name based on the selected values
+    mode_column = f'{mode_abbreviation}_{opportunity_type_abbreviation}{travel_time_value}'
+    
+    # Retrieve the loaded data from session state
+    grid = st.session_state['data_Finland']
+    # Filter the grid data based on the selected municipality
+    if selected_municipality != 'Finland':
+        filtered_grid = grid[grid['mncplty'] == selected_municipality]
+        zoom_level = 10
+    else:
+        filtered_grid = grid
+        zoom_level = 7
 
-        if use_same_intervals:
-            # Calculate the maximum value of the 60-minute column for appropriate class bins
-            max_value = filtered_grid[f'{mode_abbreviation}_{opportunity_type_abbreviation}60'].max()
+    if use_same_intervals:
+        # Calculate the maximum value of the 60-minute column for appropriate class bins
+        max_value = filtered_grid[f'{mode_abbreviation}_{opportunity_type_abbreviation}60'].max()
 
-            # Define the bins based on the maximum value
-            bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
-        else:
-            # Calculate the maximum value of the selected travel time cut-off column for appropriate class bins
-            max_value = filtered_grid[mode_column].max()
+        # Define the bins based on the maximum value
+        bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
+    else:
+        # Calculate the maximum value of the selected travel time cut-off column for appropriate class bins
+        max_value = filtered_grid[mode_column].max()
 
-            # Define the bins based on the maximum value
-            bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
+        # Define the bins based on the maximum value
+        bins = [0, max_value / 6, max_value / 3, max_value / 2, 2 * max_value / 3, 5 * max_value / 6, max_value]
 
-        return zoom_level, bins, mode_column, filtered_grid
+    return zoom_level, bins, mode_column, filtered_grid
 
 
 
@@ -262,7 +259,8 @@ def main():
     responsive_to_window_width()
     m = filter_and_create_charts(municipalities)
     if m is not None:
-        folium_static(m, height=800)
+        with st.spinner(text="Loading map..."):
+            folium_static(m, height=800)
     else:
         st.warning('Please select area of interest, mode of transportation, and opportunity type')
     add_description()
