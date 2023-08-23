@@ -4,7 +4,6 @@ import geopandas as gpd
 import plotly.express as px
 import folium
 from streamlit_folium import folium_static
-from functions.markdown_functions import responsive_to_window_width
 
 
 def set_page():
@@ -348,6 +347,16 @@ def style_comparison_polygon(polygon):
             'fillColor': '#476dbf',
             'color': '#476dbf'
         }
+def responsive_to_window_width():
+    """
+    A function that sets the map object width according to window size
+    """    
+    making_map_responsive = """
+    <style>
+    [title~="st.iframe"] { width: 100%}
+    </style>
+    """
+    st.markdown(making_map_responsive, unsafe_allow_html=True)
 
 def add_description():
     """

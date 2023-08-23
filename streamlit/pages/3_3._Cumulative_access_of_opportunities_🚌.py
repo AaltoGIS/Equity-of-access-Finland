@@ -36,6 +36,7 @@ def read_data():
         with st.spinner(text="Loading data..."):
             print("starting to load grid")
             start_time = time.time()
+            # geoarrow / apachearrow
             grid = gpd.read_file('streamlit/data/grid.gpkg', encoding='utf-8')
             end_time = time.time()
             print(f"Data loading time: {end_time - start_time:.2f} seconds")
