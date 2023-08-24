@@ -34,12 +34,7 @@ def read_data():
     # Check if data for Finland has already been loaded to session state
     if 'data_Finland' not in st.session_state:
         with st.spinner(text="Loading data..."):
-            print("starting to load grid")
-            start_time = time.time()
-            # geoarrow / apachearrow
-            grid = gpd.read_file('streamlit/data/grid.gpkg', encoding='utf-8')
-            end_time = time.time()
-            print(f"Data loading time: {end_time - start_time:.2f} seconds")
+            grid = gpd.read_parquet('streamlit/data/grid.parquet')
             grid = grid.to_crs('EPSG:4326')
             st.session_state['data_Finland'] = grid
 
