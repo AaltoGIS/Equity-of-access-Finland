@@ -382,6 +382,7 @@ def add_description():
         <li>Maximum number of transfers per public transport trip: 1</li>
         <li>Maximum distance one can walk to access, egress or transfer on a public transport trip: 1 km (for each leg of the journey)</li>
     </ul>
+    <br><br><i>App made by Matti Pönkänen (2023). Licensed under CC-BY.</i>
 
 
 

@@ -23,6 +23,6 @@ st.markdown("""
 <br><br>
 <h4 style="margin-left: -10px;">👈 From the sidebar you can explore different datasets produced for accessibility equity analysis.</h4>
 <br><br><br><br>
- <i>App made by Matti Pönkänen, FLOU ltd (2023). Licensed under CC-BY.</i>
+ <i>App made by Matti Pönkänen (2023). Licensed under CC-BY.</i>
  
  """, unsafe_allow_html=True)

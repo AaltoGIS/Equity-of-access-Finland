@@ -187,6 +187,7 @@ def add_description():
     ### **Methodology**
 
     <span style="font-size: 18px;">Palma ratio is calculated by using the palma_ratio() function of the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility). The function uses the cumulative access dataset (found on page <b>3. Cumulative access of opportunities </b>🚌) and the mean income of population within each grid cell found in the [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html).  Results are grouped and calculated for each municipality.</span>
+    <br><br><i>App made by Matti Pönkänen (2023). Licensed under CC-BY.</i>
 
     ''', unsafe_allow_html=True)
     
