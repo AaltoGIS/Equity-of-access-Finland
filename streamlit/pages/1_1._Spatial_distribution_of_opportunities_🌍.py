@@ -26,7 +26,7 @@ def read_data():
     Returns:
         data: the read data
     """
-    data = gpd.read_file('streamlit/data/opportunities.gpkg')
+    data = gpd.read_parquet('streamlit/data/opportunities.parquet')
     data = data.to_crs('EPSG:4326')
     return data
 
@@ -83,7 +83,7 @@ def create_charts(selected_municipality, filtered_data, zoom_level, opportunity_
 
     """
     # Read municipal polygons to display boundaries
-    municipality_polygons = gpd.read_file('streamlit/data/kunnat2023.gpkg')
+    municipality_polygons = gpd.read_parquet('streamlit/data/kunnat2023.parquet')
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
     
     # Summarize the number of each opportunity type for the selected municipality or all
@@ -197,7 +197,7 @@ def add_description():
             <div style="margin-left: 20px;">Finnish institute of health and welfare</div>
         <b>Educational facilities</b>
             <div style="margin-left: 20px;">Statistics Finland | https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html</div>
-        
+        <br><br><i>App made by Matti Pönkänen (2023). Licensed under CC-BY.</i>
         </div>
 
         

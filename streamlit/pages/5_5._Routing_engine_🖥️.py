@@ -78,9 +78,11 @@ outputdframe = pd.DataFrame(
             ["Number of trip destinations (Grocery shops)", "2 384", "224"],
             ["Number of public transport lines", "9276", "113"],
             ["Number of edges (connections)", "2 909 608", "157 644"],
-            ["Building a routable network", "552 seconds (9 min)", "41 seconds"],
-            ["Calculating travel time matrix up to 60 minutes (Public transport)", "3 292 seconds (55 min)", "8 seconds"],
-            ["Calculating cumulative access for one opportunity type for three travel time thresholds", "2 624 seconds (44 min)", "6 seconds"]
+            ["Building a routable network", "552 s (9 min)", "41 s"],
+            ["Calculating travel time matrix up to 60 minutes (Public transport)", "3 292 s (55 min)", "8 s"],
+            ["Calculating travel time matrix up to 60 minutes (Cycling)", "1 063 s (18 min)", "135 s (2 min)"],
+            ["Calculating cumulative access for one opportunity type for three travel time thresholds (Public transport)", "2 624 s (44 min)", "6 s"],
+            ["Calculating cumulative access for one opportunity type for three travel time thresholds (Cycling)", "2 397 s (40 min)", "801 s (13 min)"]
         ]
     ),
     columns=['', 'Nation', 'Region (Pirkanmaa)']
@@ -134,5 +136,7 @@ with col2:
     </div>
     ''', unsafe_allow_html=True)
     st.table(df1)
-
+st.markdown('''
+    <br><br><i>App made by Matti Pönkänen (2023). Licensed under CC-BY.</i>
+    ''', unsafe_allow_html=True)
 
