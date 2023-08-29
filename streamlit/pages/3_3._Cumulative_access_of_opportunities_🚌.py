@@ -6,7 +6,6 @@ import numpy as np
 import folium
 import branca.colormap as cm
 from streamlit_folium import folium_static
-import time
 
 
 def set_page():
@@ -244,7 +243,7 @@ def add_description():
         <li>Maximum number of transfers per public transport trip: 1</li>
         <li>Maximum distance one can walk to access, egress or transfer on a public transport trip: 1 km (for each leg of the journey)</li>
     </ul>
-    <br><br><i>App made by Matti Pönkänen (2023). Licensed under CC-BY.</i>
+    <br><br><i>App made by Matti Pönkänen (2023). Data hosted by Aalto University. Licensed under CC-BY.</i>
 
 
 

@@ -137,6 +137,6 @@ with col2:
     ''', unsafe_allow_html=True)
     st.table(df1)
 st.markdown('''
-    <br><br><i>App made by Matti Pönkänen (2023). Licensed under CC-BY.</i>
+    <br><br><i>App made by Matti Pönkänen (2023). Data hosted by Aalto University. Licensed under CC-BY.</i>
     ''', unsafe_allow_html=True)
 
