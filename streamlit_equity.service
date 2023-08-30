@@ -1,0 +1,16 @@
+[Unit]
+Description=Streamlit Equity App Service
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/home/ubuntu/miniconda3/envs/appenv/bin/streamlit run /home/ubuntu/Equity-of-access-Finland/streamlit/Equity_of_access_App.py
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
+
