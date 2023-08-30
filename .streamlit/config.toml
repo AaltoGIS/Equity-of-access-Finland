@@ -3,3 +3,10 @@ base="light"
 primaryColor="#845EB8"
 secondaryBackgroundColor="#EFEBE1"
 textColor="#292442"
+
+[server]
+port = 8501
+headless = true
+
+[browser]
+gatherUsageStats = false
