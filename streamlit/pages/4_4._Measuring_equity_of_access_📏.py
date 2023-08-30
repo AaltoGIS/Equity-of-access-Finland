@@ -2,6 +2,7 @@ import streamlit as st
 from streamlit.components.v1 import html
 import geopandas as gpd
 import folium
+import numpy as np
 from streamlit_folium import folium_static
 import branca.colormap as cm
 
@@ -16,7 +17,7 @@ def set_page():
     st.markdown('''
     ### **Measuring equity of access** 📏
 
-    <span style="font-size: 18px;">This tool allows you to compare the equity of access between different municipalities in Finland, by using Palma ratio. The Palma ratio is calculated using the national cumulative accessibility distribution of opportunities (found on page <b>3. Cumulative access of opportunities </b>🚌) and mean income of population within each 1 km x 1 km grid cell. Results are aggregated on a municipal level. In this context the ratio measures the average accessibility of the top 10% income residents within a municipality divided by the average accessibility of the bottom 40% income residents. A higher Palma ratio indicates greater equity difference in access when income changes. For example, a Palma ratio of 10 means that the top 10% income residents have 10 times better access than the bottom 40% income residents. <br><br><i><b>Note:</b> In the map and table below some municipalities are not present. This is the case when there are not enough data points or the access is at an equilibrium (in this case this usually means there are no access with the particular modes). Some municipalities also contain extream differences, particularly in municipalities that have a large surface area and low population density.</i></span><br><br>
+    <span style="font-size: 18px;">This tool allows you to compare the equity of access between different municipalities in Finland, by using Palma ratio. The Palma ratio is calculated using the national cumulative accessibility distribution of opportunities (found on page <b>3. Cumulative access of opportunities </b>🚌) and mean income of population within each 1 km x 1 km grid cell. Results are aggregated on a municipal level. In this context the ratio measures the average accessibility of the top 10 % income residents within a municipality divided by the average accessibility of the bottom 40 % income residents. A higher Palma ratio indicates greater equity difference in access when income changes. Values higher than 1 indicate that the top 10 % income residents have better access than the bottom 40 % income residents. For example, if a Palma ratio is 10 it indicates that the wealthiest have 10 times better access than the poorest. Values below 1 indicates that the bottom 40 % income residents have better access. A ratio of 1 indicates that the access is at an equilibrium (in many cases this usually means there are no access with the particular modes).<br><br><i><b>Note:</b> In the map and table below some municipalities have 0 or inf values. When the values are inf, it means that there is no access for lower-income residents, but there is access for higher-income residents, resulting in inf values. On the other hand, when the value is 0, it means that there is no access for higher-income residents, but there is access for lower-income residents. Some municipalities are also not present, this is the case when there are not enough data points to present the different income deciles or there is no access with a particular mode.</i></span><br><br>
 
     ''', unsafe_allow_html=True)
 
@@ -25,7 +26,7 @@ def read_data():
     """
     Reads and reprojects palma data
     """
-    data = gpd.read_file('streamlit/data/palma.gpkg')
+    data = gpd.read_file('streamlit/data/palma_null.gpkg')
     palma = data.to_crs('EPSG:4326')
     return palma
 
@@ -69,10 +70,10 @@ def filter_and_create_charts(palma):
         mode_column = f'{mode_abbreviation}_{opportunity_type_abbreviation}_{travel_time_value}'
 
         # Filter the palma data based on the selected mode, opportunity type, and travel time cut-off
-        filtered_palma = palma[palma[mode_column] >= 0]
+        filtered_palma = palma[~palma[mode_column].isin([np.nan, None])]
+        # filtered_palma = palma[~palma[mode_column].isin([0, float('inf'), float('-inf'), np.nan, None])]
         centroid = filtered_palma.geometry.unary_union.centroid
         m = folium.Map(location=[centroid.y, centroid.x], zoom_start=5, tiles="cartodbpositron")
-        filtered_palma = filtered_palma[~filtered_palma[mode_column].isin([0, float('inf'), float('-inf'), None])]
         responsive_to_window_width()
         m = create_map(m, filtered_palma, opportunity_type, mode_column)
         return m, filtered_palma, mode_column
@@ -104,22 +105,24 @@ def create_map(m, filtered_palma, opportunity_type, mode_column):
     """
     # Create a custom color map using a built-in color map from the branca library
     fill_color = cm.LinearColormap(
-        ["#FFFFC8", "#FDEBA8", "#F8CD6D", "#F5A800", "#F17B00", "#E54000", "#B51700", "#7D0025"],  # Colors
-        vmin=0, vmax=10,  # Range of values
-        index=[0, 1, 2, 3, 4, 6, 8, 10]  # Class intervals
+        ["#4A6FE3", "#788CE1", "#9DA8E2", "#C0C5E3", "#a6a6a6", "#E6BCC3", "#E495A5", "#DD6D87", "#D33F6A"],  # Colors
+        vmin=0, vmax=2,  # Range of values
+        index=[0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]  # Class intervals
     )
+
 
     choropleth = folium.GeoJson(
         filtered_palma,
         style_function=lambda feature: {
             'fillColor': fill_color(feature['properties'][mode_column]),
             'fillOpacity': 0.8,
-            'weight': 0,
+            'weight': 1,
+            'color': "#666"
         },
         highlight_function=lambda feature: {
             'fillOpacity': 0.9,
             'weight': 3,
-            'color': '#666',
+            'color': '#ffffff',
         }
     ).add_to(m)
 
@@ -164,7 +167,7 @@ def rank_list(filtered_palma, mode_column):
     Creating a dataframe table to rank different municipalities based on Palma ratio.
         
     Args:
-        filtered_palma: a subset where 0, inf and NAN occurances have been removed
+        filtered_palma: a subset where NA and NAN occurances have been removed
         mode_column: contains the user selection, which mode to look at
 
     Returns:
@@ -174,6 +177,8 @@ def rank_list(filtered_palma, mode_column):
     df = filtered_palma[['nimi', mode_column]].copy()
     df.columns = ['Kunta', 'Palma ratio']
     df = df.sort_values(by='Palma ratio', ascending=False)
+    df = df.round({'Palma ratio': 4})
+    df['Palma ratio'] = df['Palma ratio'].astype(str).replace('inf', "inf")
     df = df.reset_index(drop=True)
     df.index += 1
     return df
@@ -187,7 +192,7 @@ def add_description():
     ### **Methodology**
 
     <span style="font-size: 18px;">Palma ratio is calculated by using the palma_ratio() function of the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility). The function uses the cumulative access dataset (found on page <b>3. Cumulative access of opportunities </b>🚌) and the mean income of population within each grid cell found in the [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html).  Results are grouped and calculated for each municipality.</span>
-    <br><br><i>App made by Matti Pönkänen (2023). Licensed under CC-BY.</i>
+    <br><br><i>App made by Matti Pönkänen (2023). Data hosted by Aalto University. Licensed under CC-BY.</i>
 
     ''', unsafe_allow_html=True)
     
