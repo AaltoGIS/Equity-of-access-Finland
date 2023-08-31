@@ -6,7 +6,7 @@ import numpy as np
 import folium
 import branca.colormap as cm
 from streamlit_folium import folium_static
-
+from pages.utils import DATA_FOLDER
 
 def set_page():
     """
@@ -33,11 +33,11 @@ def read_data():
     # Check if data for Finland has already been loaded to session state
     if 'data_Finland' not in st.session_state:
         with st.spinner(text="Loading data..."):
-            grid = gpd.read_parquet('streamlit/data/grid.parquet')
+            grid = gpd.read_parquet(DATA_FOLDER / 'grid.parquet')
             grid = grid.to_crs('EPSG:4326')
             st.session_state['data_Finland'] = grid
 
-    municipalities = pd.read_csv('streamlit/data/unique_mncplty.csv')
+    municipalities = pd.read_csv(DATA_FOLDER / 'unique_mncplty.csv')
 
     municipalities = municipalities['mncplty'].unique()
 
