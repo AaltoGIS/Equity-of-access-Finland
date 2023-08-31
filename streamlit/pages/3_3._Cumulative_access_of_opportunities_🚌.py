@@ -196,13 +196,13 @@ def create_map(m, bins, filtered_grid, opportunity_type, mode_column):
     choropleth.add_child(
         folium.features.GeoJsonTooltip(
             fields=[mode_column],
-            aliases=[f'Number of accessible {opportunity_type.lower()}'],
+            aliases=[f'Number of accessible {opportunity_type.lower()}(s)'],
             localize=True
         )
     )
 
     # Add a color scale legend to the map
-    fill_color.caption = f'Number of accessible {opportunity_type.lower()}'
+    fill_color.caption = f'Number of accessible {opportunity_type.lower()}(s)'
     m.add_child(fill_color)
 
     return m

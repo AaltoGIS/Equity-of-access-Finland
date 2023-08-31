@@ -68,10 +68,15 @@ def filter_and_create_charts(palma):
         travel_time_value = travel_time.split()[0]
         # Construct the field name based on the selected values
         mode_column = f'{mode_abbreviation}_{opportunity_type_abbreviation}_{travel_time_value}'
+        # Count the total number of missing values in the palma DataFrame
 
-        # Filter the palma data based on the selected mode, opportunity type, and travel time cut-off
-        filtered_palma = palma[~palma[mode_column].isin([np.nan, None])]
-        # filtered_palma = palma[~palma[mode_column].isin([0, float('inf'), float('-inf'), np.nan, None])]
+ 
+        # Select the mode_column, kunta, vuosi, nimi, namn, name, and geometry columns from the palma DataFrame
+        filtered_palma = palma[[mode_column, 'kunta', 'vuosi', 'nimi', 'namn', 'name', 'geometry']]
+
+        # Filter out rows where the value in the mode_column is either np.nan or None
+        filtered_palma = filtered_palma[~filtered_palma[mode_column].isin([np.nan, None])]
+
         centroid = filtered_palma.geometry.unary_union.centroid
         m = folium.Map(location=[centroid.y, centroid.x], zoom_start=5, tiles="cartodbpositron")
         responsive_to_window_width()
