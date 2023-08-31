@@ -310,7 +310,7 @@ def create_comparison_map():
 
     This function allows the user to select two sets of municipalities using Streamlit's `multiselect` widget. It then creates a map using the Folium library. The map displays the two sets of selected municipalities as polygons in different colors.
     """    
-    municipality_polygons = gpd.read_parquet('streamlit/data/kunnat2023.parquet')
+    municipality_polygons = gpd.read_parquet(DATA_FOLDER / 'kunnat2023.parquet')
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
 
     # Select municipalities where the field in 'nimi' is same in municipality and municipality polygons and insert it to filtered_polygons
