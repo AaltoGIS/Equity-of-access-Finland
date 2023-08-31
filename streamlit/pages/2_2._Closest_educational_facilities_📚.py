@@ -4,7 +4,7 @@ import geopandas as gpd
 import plotly.express as px
 import folium
 from streamlit_folium import folium_static
-
+from pages.utils import DATA_FOLDER
 
 def set_page():
     """
@@ -32,9 +32,9 @@ def read_data():
         municipality: 
 
     """    
-    pt_data = pd.read_csv('streamlit/data/access_ttm_pt.csv')
-    cycling_data = pd.read_csv('streamlit/data/access_ttm_cycling.csv')
-    grid = pd.read_csv('streamlit/data/grid.csv')
+    pt_data = pd.read_csv(DATA_FOLDER / 'access_ttm_pt.csv')
+    cycling_data = pd.read_csv(DATA_FOLDER / 'access_ttm_cycling.csv')
+    grid = pd.read_csv(DATA_FOLDER / 'grid.csv')
     # Extract unique values for municipality column
     municipality = cycling_data['nimi'].unique()
     # Store municipality variable in st.session_state

@@ -4,6 +4,7 @@ import numpy as np
 import plotly.express as px
 import folium
 from streamlit_folium import folium_static
+from pages.utils import DATA_FOLDER
 
 def set_page():
     """
@@ -26,7 +27,7 @@ def read_data():
     Returns:
         data: the read data
     """
-    data = gpd.read_parquet('../data/opportunities.parquet')
+    data = gpd.read_parquet(DATA_FOLDER / 'opportunities.parquet')
     data = data.to_crs('EPSG:4326')
     return data
 
@@ -83,7 +84,7 @@ def create_charts(selected_municipality, filtered_data, zoom_level, opportunity_
 
     """
     # Read municipal polygons to display boundaries
-    municipality_polygons = gpd.read_parquet('../data/kunnat2023.parquet')
+    municipality_polygons = gpd.read_parquet(DATA_FOLDER / 'kunnat2023.parquet')
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
     
     # Summarize the number of each opportunity type for the selected municipality or all
