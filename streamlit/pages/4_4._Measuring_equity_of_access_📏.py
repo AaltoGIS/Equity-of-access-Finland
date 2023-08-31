@@ -5,7 +5,7 @@ import folium
 import numpy as np
 from streamlit_folium import folium_static
 import branca.colormap as cm
-
+from pages.utils import DATA_FOLDER
 
 def set_page():
     """
@@ -26,7 +26,7 @@ def read_data():
     """
     Reads and reprojects palma data
     """
-    data = gpd.read_file('streamlit/data/palma_null.gpkg')
+    data = gpd.read_file(DATA_FOLDER / 'palma_null.gpkg')
     palma = data.to_crs('EPSG:4326')
     return palma
 
