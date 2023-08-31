@@ -270,12 +270,12 @@ def create_map(selected_municipalities):
     """
     # Select municipalities where the field in 'nimi' is same in municipality and municipality polygons and insert it to filtered_polygons
     if selected_municipalities:
-        municipality_polygons = gpd.read_parquet('streamlit/data/kunnat2023.parquet')
+        municipality_polygons = gpd.read_parquet(DATA_FOLDER / 'kunnat2023.parquet')
         municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
         filtered_polygons = municipality_polygons[municipality_polygons['nimi'].isin(selected_municipalities)]
         zoom_level = 7
     else:
-        finland_polygons = gpd.read_file('streamlit/data/suomi.gpkg')
+        finland_polygons = gpd.read_file(DATA_FOLDER / 'suomi.gpkg')
         finland_polygons = finland_polygons.to_crs('EPSG:4326')
         filtered_polygons = finland_polygons
         zoom_level = 4
