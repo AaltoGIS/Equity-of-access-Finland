@@ -33,7 +33,7 @@ st.markdown("""
    <div style="display: flex; flex-direction: column; align-items: center; margin-right: 80px;">
      <img src="https://people.aalto.fi/files/1213981_x_512_3to4.jpg" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover; object-position: 50% 35%;">
      <span style="margin-top: 15px;"><b>Henrikki Tenkanen</b>
-            <br>Aalto University <a href="https://research.aalto.fi/fi/persons/henrikki-tenkanen" target="_blank"><i class="fas fa-link" style="font-size: 18px; margin-top: 2px; color: lightgrey"></i></a> 
+            <br>Aalto University <a href="https://gistlab.science" target="_blank"><i class="fas fa-link" style="font-size: 18px; margin-top: 2px; color: lightgrey"></i></a> 
      </span>
    </div>
    <div style="display: flex; flex-direction: column; align-items:center;">
@@ -46,7 +46,9 @@ st.markdown("""
 
  <br><br>
  <div style="text-align: center;">
-  <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+  <i>Service hosted by GIST Lab, Aalto University. Licensed under CC-BY.</i>
+  <br><br>
+  <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
  </div>
  
 
