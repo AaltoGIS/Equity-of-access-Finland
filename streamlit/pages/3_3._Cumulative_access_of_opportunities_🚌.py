@@ -99,6 +99,11 @@ def filter_and_create_charts(municipalities):
         # Select only the necessary columns
         filtered_grid = filtered_grid[[mode_column, 'mncplty', 'geometry']]
 
+        if filtered_grid.empty:
+            st.warning(f"No data available for {selected_municipality}.")
+            return None
+
+
         # Calculate the centroid of the selected municipality's geometry so that map gets to the location of the points
         centroid = filtered_grid.geometry.unary_union.centroid
 
@@ -196,13 +201,13 @@ def create_map(m, bins, filtered_grid, opportunity_type, mode_column):
     choropleth.add_child(
         folium.features.GeoJsonTooltip(
             fields=[mode_column],
-            aliases=[f'Number of accessible {opportunity_type.lower()}'],
+            aliases=[f'Number of accessible {opportunity_type.lower()}(s)'],
             localize=True
         )
     )
 
     # Add a color scale legend to the map
-    fill_color.caption = f'Number of accessible {opportunity_type.lower()}'
+    fill_color.caption = f'Number of accessible {opportunity_type.lower()}(s)'
     m.add_child(fill_color)
 
     return m
@@ -243,7 +248,11 @@ def add_description():
         <li>Maximum number of transfers per public transport trip: 1</li>
         <li>Maximum distance one can walk to access, egress or transfer on a public transport trip: 1 km (for each leg of the journey)</li>
     </ul>
-    <br><br><i>App made by Matti Pönkänen (2023). Data hosted by Aalto University. Licensed under CC-BY.</i>
+    <br><br><br><br>
+    <div style="text-align: center;">
+        <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+    </div>
+
 
 
 

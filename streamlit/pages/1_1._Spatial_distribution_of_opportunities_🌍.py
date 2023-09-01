@@ -198,7 +198,10 @@ def add_description():
             <div style="margin-left: 20px;">Finnish institute of health and welfare</div>
         <b>Educational facilities</b>
             <div style="margin-left: 20px;">Statistics Finland | https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html</div>
-        <br><br><i>App made by Matti Pönkänen (2023). Data hosted by Aalto University. Licensed under CC-BY.</i>
+        </div>
+        <br><br><br><br>
+        <div style="text-align: center;">
+            <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
         </div>
 
         
