@@ -113,7 +113,7 @@ styles = [
 
 # color function
 def color_cells2(x):
-    c1 = 'background-color: #efe6fc'
+    c1 = 'background-color: #f7f2ff'
     c2 = 'background-color: #EFEBE1'
     df2 = pd.DataFrame('', index=x.index, columns=x.columns)
     df2.iloc[:, 1] = c1
@@ -137,6 +137,10 @@ with col2:
     ''', unsafe_allow_html=True)
     st.table(df1)
 st.markdown('''
-    <br><br><i>App made by Matti Pönkänen (2023). Data hosted by Aalto University. Licensed under CC-BY.</i>
+    <br><br>
+    <div style="text-align: center;">
+        <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+    </div>
+
     ''', unsafe_allow_html=True)
 

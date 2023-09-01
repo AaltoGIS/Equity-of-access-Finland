@@ -45,10 +45,10 @@ def filter_and_create_charts(palma):
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        selected_mode = st.selectbox('Select mode', ('Public transport + 1 000 m walk', 'Bicycle'))
+        selected_mode = st.selectbox('Select mode', ('Bicycle','Public transport + 1 000 m walk'))
         travel_time = st.radio("Select travel time cut-off:", ("30 min", "45 min", "60 min"), horizontal = True)
     with col2:
-        opportunity_type = st.selectbox("Select opportunity type:", ("Pharmacy", "Grocery store", "Library", "School", "Healthcare"))
+        opportunity_type = st.selectbox("Select opportunity type:", ("School", "Pharmacy", "Grocery store", "Library", "Healthcare"))
         
 
     # Map the selected mode to the corresponding abbreviation in the field name
@@ -68,10 +68,15 @@ def filter_and_create_charts(palma):
         travel_time_value = travel_time.split()[0]
         # Construct the field name based on the selected values
         mode_column = f'{mode_abbreviation}_{opportunity_type_abbreviation}_{travel_time_value}'
+        # Count the total number of missing values in the palma DataFrame
 
-        # Filter the palma data based on the selected mode, opportunity type, and travel time cut-off
-        filtered_palma = palma[~palma[mode_column].isin([np.nan, None])]
-        # filtered_palma = palma[~palma[mode_column].isin([0, float('inf'), float('-inf'), np.nan, None])]
+ 
+        # Select the mode_column, kunta, vuosi, nimi, namn, name, and geometry columns from the palma DataFrame
+        filtered_palma = palma[[mode_column, 'kunta', 'vuosi', 'nimi', 'namn', 'name', 'geometry']]
+
+        # Filter out rows where the value in the mode_column is either np.nan or None
+        filtered_palma = filtered_palma[~filtered_palma[mode_column].isin([np.nan, None])]
+
         centroid = filtered_palma.geometry.unary_union.centroid
         m = folium.Map(location=[centroid.y, centroid.x], zoom_start=5, tiles="cartodbpositron")
         responsive_to_window_width()
@@ -192,7 +197,11 @@ def add_description():
     ### **Methodology**
 
     <span style="font-size: 18px;">Palma ratio is calculated by using the palma_ratio() function of the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility). The function uses the cumulative access dataset (found on page <b>3. Cumulative access of opportunities </b>🚌) and the mean income of population within each grid cell found in the [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html).  Results are grouped and calculated for each municipality.</span>
-    <br><br><i>App made by Matti Pönkänen (2023). Data hosted by Aalto University. Licensed under CC-BY.</i>
+    <br><br>
+    <div style="text-align: center;">
+        <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+    </div>
+
 
     ''', unsafe_allow_html=True)
     

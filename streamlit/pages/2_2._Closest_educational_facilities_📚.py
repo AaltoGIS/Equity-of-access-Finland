@@ -179,14 +179,19 @@ def create_comparison_fig(data_long1, data_long2, options1, options2):
     Returns:
         fig: A comparison figure displaying the cumulative share of public transportation and cycling for the two sets of selected municipalities.
     """    
-    if len(options1) > 3 or len(options2) > 3:
-        data_long = pd.concat([data_long1.assign(comparison='Selection 1'), data_long2.assign(comparison='Selection 2')])
-        fig = px.line(data_long, x='travel_time', y='access', color='comparison', line_dash='mode',
-                      color_discrete_sequence=['#DD6E82', '#476dbf'])
+    if sorted(options1) == sorted(options2):
+        # If options1 and options2 are the same, only plot one set of data
+        fig = px.line(data_long1, x='travel_time', y='access', color='mode', color_discrete_sequence=['#DD6E82', '#476dbf'])
     else:
-        data_long = pd.concat([data_long1, data_long2])
-        fig = px.line(data_long, x='travel_time', y='access', color='kunta', line_dash='mode',
-                      color_discrete_sequence=['#DD6E82', '#476dbf'])
+        if len(options1) > 3 or len(options2) > 3:
+            data_long = pd.concat([data_long1.assign(comparison='Selection 1'), data_long2.assign(comparison='Selection 2')])
+            fig = px.line(data_long, x='travel_time', y='access', color='comparison', line_dash='mode',
+                            color_discrete_sequence=['#DD6E82', '#476dbf'])
+        else:
+            data_long = pd.concat([data_long1, data_long2])
+            fig = px.line(data_long, x='travel_time', y='access', color='kunta', line_dash='mode',
+                            color_discrete_sequence=['#DD6E82', '#476dbf'])
+
     fig.update_layout(
         title='Accessibility of nearest educational facilities',
         xaxis_title='Travel time to nearest educational institution (min)',
@@ -382,7 +387,10 @@ def add_description():
         <li>Maximum number of transfers per public transport trip: 1</li>
         <li>Maximum distance one can walk to access, egress or transfer on a public transport trip: 1 km (for each leg of the journey)</li>
     </ul>
-    <br><br><i>App made by Matti Pönkänen (2023). Data hosted by Aalto University. Licensed under CC-BY.</i>
+    <br><br>
+    <div style="text-align: center;">
+     <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+    </div>
 
 
 
