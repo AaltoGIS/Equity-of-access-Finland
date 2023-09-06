@@ -250,7 +250,9 @@ def add_description():
     </ul>
     <br><br><br><br>
     <div style="text-align: center;">
-        <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+    <i>Service hosted by GIST Lab, Aalto University. Licensed under CC-BY.</i>
+    <br><br>
+    <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
     </div>
 
 

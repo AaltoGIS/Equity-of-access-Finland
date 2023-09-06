@@ -388,8 +388,10 @@ def add_description():
         <li>Maximum distance one can walk to access, egress or transfer on a public transport trip: 1 km (for each leg of the journey)</li>
     </ul>
     <br><br>
-    <div style="text-align: center;">
-     <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+    <div style="text-align: center; margin-right: 80px"">
+    <i>Service hosted by GIST Lab, Aalto University. Licensed under CC-BY.</i>
+    <br><br>
+    <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
     </div>
 
 

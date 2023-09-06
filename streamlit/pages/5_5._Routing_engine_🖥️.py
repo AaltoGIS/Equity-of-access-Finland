@@ -55,14 +55,14 @@ styles = [
     dict(selector="td", props=td_props),
     dict(selector="th:nth-child(1)", props=[('color', 'white')]),
     dict(selector="td:nth-child(2)", props=[('font-weight', 'bold')]),
-    dict(selector="th:nth-child(2)", props=[('background-color', '#574078'), ('color', 'white')]),
-    dict(selector="th:nth-child(3)", props=[('background-color', '#ada07d'), ('color', 'white')]),
+    dict(selector="th:nth-child(2)", props=[('background-color', '#DD6E82'), ('color', 'white')]),
+    dict(selector="th:nth-child(3)", props=[('background-color', '#4A6FE3'), ('color', 'white')]),
     dict(selector="table, th, td", props=[('border', '1px solid white')])
 ]
 
 def color_cells1(x):
-    c1 = 'background-color: #efe6fc'
-    c2 = 'background-color: #EFEBE1'
+    c1 = 'background-color: #FCF0F3'
+    c2 = 'background-color: #f2f5fc'
     df1 = pd.DataFrame('', index=x.index, columns=x.columns)
     df1.iloc[:, 0] = c1
     df1.iloc[:, 1] = c2
@@ -106,15 +106,15 @@ styles = [
     dict(selector="td", props=td_props),
     dict(selector="th:nth-child(1)", props=[('color', 'white')]),
     dict(selector="td:nth-child(2)", props=[('font-weight', 'bold'), ('font-size', '15px'), ('background-color', '#f7f7f7')]),
-    dict(selector="th:nth-child(3)", props=[('background-color', '#574078'), ('color', 'white')]),
-    dict(selector="th:nth-child(4)", props=[('background-color', '#ada07d'), ('color', 'white')]),
+    dict(selector="th:nth-child(3)", props=[('background-color', '#DD6E82'), ('color', 'white')]),
+    dict(selector="th:nth-child(4)", props=[('background-color', '#4A6FE3'), ('color', 'white')]),
     dict(selector="table, th, td", props=[('border', '1px solid white')])
 ]
 
 # color function
 def color_cells2(x):
-    c1 = 'background-color: #f7f2ff'
-    c2 = 'background-color: #EFEBE1'
+    c1 = 'background-color: #FCF0F3'
+    c2 = 'background-color: #f2f5fc'
     df2 = pd.DataFrame('', index=x.index, columns=x.columns)
     df2.iloc[:, 1] = c1
     df2.iloc[:, 2] = c2
@@ -138,8 +138,10 @@ with col2:
     st.table(df1)
 st.markdown('''
     <br><br>
-    <div style="text-align: center;">
-        <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+    <div style="text-align: center; margin-">
+    <i>Service hosted by GIST Lab, Aalto University. Licensed under CC-BY.</i>
+    <br><br>
+    <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
     </div>
 
     ''', unsafe_allow_html=True)
