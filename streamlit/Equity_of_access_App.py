@@ -45,7 +45,7 @@ st.markdown("""
      </span>
    </div>
    <div div class="author" style="display: flex; flex-direction: column; align-items:center; margin-right: 80px">
-     <img src="https://research.aalto.fi/files-asset/3070611/1190281_x_512.jpg?w=160&f=webp" style="border-radius:50%; width: 150px; height: 150px; object-fit: cover;">
+     <img src="https://media.licdn.com/dms/image/D4D03AQGxOHqmGuOjJw/profile-displayphoto-shrink_400_400/0/1683380472067?e=1699488000&v=beta&t=YE6pMorFf3PaF_5XEhofVikjyFSBkUalUPVGTBjjMg8" style="border-radius:50%; width: 150px; height: 150px; object-fit: cover;">
      <span style="margin-top: 15px;"><b>Miloš Mladenović</b>
             <br>Aalto University <a href="https://research.aalto.fi/en/persons/milos-mladenovic" target="_blank"><i class="fas fa-link" style="font-size: 18px; margin-top: 2px; color: lightgrey"></i></a> 
      </span>

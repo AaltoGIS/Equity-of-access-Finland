@@ -6,6 +6,8 @@ import folium
 from streamlit_folium import folium_static
 from pages.utils import DATA_FOLDER
 
+# Bootstrap approach for mobile.
+
 def set_page():
     """
     Sets the page and gives the introduction to the tool.
@@ -193,11 +195,11 @@ def create_comparison_fig(data_long1, data_long2, options1, options2):
                             color_discrete_sequence=['#DD6E82', '#476dbf'])
 
     fig.update_layout(
-        title='Accessibility of nearest educational facilities',
-        xaxis_title='Travel time to nearest educational institution (min)',
+        title='Accessibility of nearest<br>educational facilities',
+        xaxis_title='Travel time to nearest <br>educational institution (min)',
         yaxis_title='Cumulative share of <br>7-17-year-old population (%)',
         legend_title='Mode',
-        height=550,
+        height=650,
         title_font=dict(
             size=22
         ),
@@ -208,6 +210,13 @@ def create_comparison_fig(data_long1, data_long2, options1, options2):
         yaxis=dict(
             title_font=dict(size=18),
             tickfont=dict(size=14)
+        ),
+        legend=dict(
+            orientation="h",
+            x=0.5,
+            y=-0.30,
+            xanchor="center",
+            yanchor="top"
         )
     )
     fig.update_traces(hovertemplate='Travel time to nearest educational institution <b>%{x} min</b><br>Share of population that can access nearest facility: <b>%{y}</b>')
@@ -239,8 +248,8 @@ def create_fig(data_long):
     fig = px.line(data_long, x='travel_time', y='access', color='mode', custom_data=['mode'], color_discrete_sequence=['#DD6E82', '#476dbf'])
     fig.update_layout(
         # title=f'Accessibility of nearest educational facilities in: {nimi}',
-        title=f'Accessibility of nearest educational facilities in {nimi}',
-        xaxis_title='Travel time to nearest educational institution (min)',
+        title=f'Accessibility of nearest<br>educational facilities in {nimi}',
+        xaxis_title='Travel time to nearest<br>educational institution (min)',
         yaxis_title='Cumulative share of <br>7-17-year-old population (%)',
         legend_title='Mode',
         title_font=dict(
@@ -253,6 +262,13 @@ def create_fig(data_long):
         yaxis=dict(
             title_font=dict(size=16),
             tickfont=dict(size=14)
+        ),
+        legend=dict(
+            orientation="h",
+            x=0.5,
+            y=-0.3,
+            xanchor="center",
+            yanchor="top"
         )
     )
     fig.update_traces(hovertemplate='Travel time to nearest educational institution <b>%{x} min</b><br>Share of population that can access nearest facility: <b>%{y}</b>')
@@ -293,7 +309,7 @@ def create_map(selected_municipalities):
     geojson.add_child(folium.features.GeoJsonTooltip(fields=['nimi'], aliases=['']))
     responsive_to_window_width()
     # Display map
-    folium_static(m, height=400)
+    folium_static(m, height=500)
 
 def style_polygon(_):
     return {
@@ -330,7 +346,7 @@ def create_comparison_map():
     geojson.add_child(folium.features.GeoJsonTooltip(fields=['nimi'], aliases=['Municipality:']))
     responsive_to_window_width()
     # Display map
-    folium_static(m, height=600)
+    folium_static(m, height=500)
 
 def highlight_comparison_polygon(feature):
     return {
