@@ -204,7 +204,6 @@ def add_description():
     <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
     </div>
 
-
     ''', unsafe_allow_html=True)
     
 

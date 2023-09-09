@@ -138,7 +138,7 @@ with col2:
     st.table(df1)
 st.markdown('''
     <br><br>
-    <div style="text-align: center; margin-">
+    <div style="text-align: center;">
     <i>Service hosted by GIST Lab, Aalto University. Licensed under CC-BY.</i>
     <br><br>
     <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
