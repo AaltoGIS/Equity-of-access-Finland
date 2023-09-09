@@ -20,10 +20,10 @@ st.markdown("""
 }
 </style>
  <div style="display: flex; align-items: center;">
-   <h2 style="margin: 0;">Measuring accessibility equity in Finland with open-sourced GIS-tools</h2>
+   <h2 style="margin: 0;">Measuring equity of access in Finland with open-source GIS-tools</h2>
    <img style="margin-left: 20px; margin-bottom: 8px;" src="https://raw.githubusercontent.com/ipeaGIT/r5r/master/r-package/man/figures/r5r_blue.png" width="100" height="110">
  </div>
- <span style="font-size: 18px;">This app was developed to showcase some of the capabilities of open-source GIS-tools and the national datasets produced for the research paper <i>Measuring accessibility equity in Finland with open-source GIS tools</i>. With this app, you can explore how different opportunities that most people consider necessities in their daily lives are distributed across Finland. You can also compare access differences between different Finnish municipalities and investigate the number of opportunities accessible by public transport or bicycle within certain time thresholds. Additionally, you have the possibility to use this tool to analyze the equity of access differences between municipalities.</span>
+ <span style="font-size: 18px;">This app was developed to showcase some of the capabilities of open-source GIS-tools and the national datasets produced for the research paper <i>Measuring equity of access in Finland with open-source GIS-tools</i>. With the app you can analyze the disparity and sufficiency of accessibility in a national context and explore the distribution of different opportunities and services that most people consider necessities in their daily lives. You have also the possibility to compare access differences between Finnish municipalities and investigate the number of opportunities accessible by public transport or bicycle within certain travel time thresholds. Additionally, you have the possibility to use this tool to analyze the equity of access differences between municipalities.</span>
 <br><br>
 <h4 style="margin-left: -10px;">👈 From the sidebar you can start to explore different datasets produced for the research paper.</h4>
 <br><br><br>

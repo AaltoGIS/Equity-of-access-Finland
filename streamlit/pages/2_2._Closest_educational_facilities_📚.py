@@ -252,6 +252,7 @@ def create_fig(data_long):
         xaxis_title='Travel time to nearest<br>educational institution (min)',
         yaxis_title='Cumulative share of <br>7-17-year-old population (%)',
         legend_title='Mode',
+        height=650,
         title_font=dict(
             size=22
         ),
