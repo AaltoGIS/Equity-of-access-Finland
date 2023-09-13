@@ -17,7 +17,7 @@ def set_page():
     st.markdown('''
     ### **Spatial distribution of opportunities** 🌍
 
-    <span style="font-size: 18px;">With the tool below you can explore the distribution of different opportunities that most people consider necessities in their daily lives. It also contains the opportunity choice set used in the accessibility analysis of this paper. First select the opportunities you want to be displayed. Then the distribution of these opportunities across Finland. After that you can select specific municipalities to explore. These opportunities are used to create different accessibility datasets found on the other pages of this app.</span>
+    <span style="font-size: 18px;">With the tool below you can explore the distribution of different opportunities that most people consider necessities in their daily lives. It includes the opportunity choice set used to produce different geospatial accessibility datasets found on ohter pages of this app. To begin, select the opportunities you wish to display, and the tool will show their distribution across Finland. You can then choose specific municipalities for further exploration.</span>
     ''', unsafe_allow_html=True)
 
 def read_data():
@@ -201,7 +201,9 @@ def add_description():
         </div>
         <br><br><br><br>
         <div style="text-align: center;">
-            <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+        <i>Service hosted by GIST Lab, Aalto University. Licensed under CC-BY.</i>
+        <br><br>
+        <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
         </div>
 
         

@@ -199,9 +199,10 @@ def add_description():
     <span style="font-size: 18px;">Palma ratio is calculated by using the palma_ratio() function of the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility). The function uses the cumulative access dataset (found on page <b>3. Cumulative access of opportunities </b>🚌) and the mean income of population within each grid cell found in the [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html).  Results are grouped and calculated for each municipality.</span>
     <br><br>
     <div style="text-align: center;">
-        <i>Data hosted by Aalto University. Licensed under CC-BY.</i>
+    <i>Service hosted by GIST Lab, Aalto University. Licensed under CC-BY.</i>
+    <br><br>
+    <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
     </div>
-
 
     ''', unsafe_allow_html=True)
     
