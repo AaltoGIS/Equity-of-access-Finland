@@ -26,7 +26,7 @@ def read_data():
     """
     Reads and reprojects palma data
     """
-    data = gpd.read_file(DATA_FOLDER / 'palma_null.gpkg')
+    data = gpd.read_file(DATA_FOLDER / 'palma_ratios_finland_for_different_opportunity_types_with_cycling_and_transit_updated.gpkg')
     palma = data.to_crs('EPSG:4326')
     return palma
 
@@ -48,7 +48,7 @@ def filter_and_create_charts(palma):
         selected_mode = st.selectbox('Select mode', ('Bicycle','Public transport + 1 000 m walk'))
         travel_time = st.radio("Select travel time cut-off:", ("30 min", "45 min", "60 min"), horizontal = True)
     with col2:
-        opportunity_type = st.selectbox("Select opportunity type:", ("School", "Pharmacy", "Grocery store", "Library", "Healthcare"))
+        opportunity_type = st.selectbox("Select opportunity type:", ("School", "Pharmacy", "Grocery store", "Library", "Healthcare", "Jobs", "Outdoor sports facilities"))
         
 
     # Map the selected mode to the corresponding abbreviation in the field name
@@ -62,6 +62,8 @@ def filter_and_create_charts(palma):
             'Library': 'kirja',
             'School': 'koul',
             'Healthcare': 'sair',
+            'Jobs': "tyo",
+            'Outdoor sports facilities': 'lahi'
         }[opportunity_type]
 
         # Map the selected travel time cut-off to the corresponding value in the field name
