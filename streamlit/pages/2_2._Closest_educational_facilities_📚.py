@@ -195,6 +195,7 @@ def create_comparison_fig(data_long1, data_long2, options1, options2):
                             color_discrete_sequence=['#DD6E82', '#476dbf'])
 
     fig.update_layout(
+        dragmode=False,
         title='Accessibility of nearest<br>educational facilities',
         xaxis_title='Travel time to nearest <br>educational institution (min)',
         yaxis_title='Cumulative share of <br>7-17-year-old population (%)',
@@ -247,7 +248,7 @@ def create_fig(data_long):
         nimi = "selection"
     fig = px.line(data_long, x='travel_time', y='access', color='mode', custom_data=['mode'], color_discrete_sequence=['#DD6E82', '#476dbf'])
     fig.update_layout(
-        # title=f'Accessibility of nearest educational facilities in: {nimi}',
+        dragmode=False,
         title=f'Accessibility of nearest<br>educational facilities in {nimi}',
         xaxis_title='Travel time to nearest<br>educational institution (min)',
         yaxis_title='Cumulative share of <br>7-17-year-old population (%)',
