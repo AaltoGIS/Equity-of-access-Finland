@@ -26,7 +26,7 @@ def read_data():
     """
     Reads and reprojects palma data
     """
-    data = gpd.read_file(DATA_FOLDER / 'palma_ratios_finland_for_different_opportunity_types_with_cycling_and_transit_updated.gpkg')
+    data = gpd.read_file(DATA_FOLDER / 'palma_null.gpkg')
     palma = data.to_crs('EPSG:4326')
     return palma
 
