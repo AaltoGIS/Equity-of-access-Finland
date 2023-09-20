@@ -102,6 +102,7 @@ def create_charts(selected_municipality, filtered_data, zoom_level, opportunity_
     )
     # Update the layout
     fig.update_layout(
+        dragmode=False,
         title=f'Number of opportunities in {selected_municipality}',
         title_font_size=24,
         xaxis_title=None,

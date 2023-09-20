@@ -195,8 +195,9 @@ def create_comparison_fig(data_long1, data_long2, options1, options2):
                             color_discrete_sequence=['#DD6E82', '#476dbf'])
 
     fig.update_layout(
+        dragmode=False,
         title='Accessibility of nearest<br>educational facilities',
-        xaxis_title='Travel time to nearest <br>educational institution (min)',
+        xaxis_title='Travel time to nearest <br>educational facility (min)',
         yaxis_title='Cumulative share of <br>7-17-year-old population (%)',
         legend_title='Mode',
         height=650,
@@ -219,7 +220,7 @@ def create_comparison_fig(data_long1, data_long2, options1, options2):
             yanchor="top"
         )
     )
-    fig.update_traces(hovertemplate='Travel time to nearest educational institution <b>%{x} min</b><br>Share of population that can access nearest facility: <b>%{y}</b>')
+    fig.update_traces(hovertemplate='Travel time to nearest educational facility <b>%{x} min</b><br>Share of population that can access nearest facility: <b>%{y}</b>')
     fig.update_yaxes(tickformat='.0%')
     for trace in fig.data:
         trace.name = trace.name.replace('Cycling', '<b>Cycling</b>')
@@ -247,9 +248,9 @@ def create_fig(data_long):
         nimi = "selection"
     fig = px.line(data_long, x='travel_time', y='access', color='mode', custom_data=['mode'], color_discrete_sequence=['#DD6E82', '#476dbf'])
     fig.update_layout(
-        # title=f'Accessibility of nearest educational facilities in: {nimi}',
+        dragmode=False,
         title=f'Accessibility of nearest<br>educational facilities in {nimi}',
-        xaxis_title='Travel time to nearest<br>educational institution (min)',
+        xaxis_title='Travel time to nearest<br>educational facility (min)',
         yaxis_title='Cumulative share of <br>7-17-year-old population (%)',
         legend_title='Mode',
         height=650,
@@ -272,7 +273,7 @@ def create_fig(data_long):
             yanchor="top"
         )
     )
-    fig.update_traces(hovertemplate='Travel time to nearest educational institution <b>%{x} min</b><br>Share of population that can access nearest facility: <b>%{y}</b>')
+    fig.update_traces(hovertemplate='Travel time to nearest educational facility <b>%{x} min</b><br>Share of population that can access nearest facility: <b>%{y}</b>')
     fig.update_yaxes(tickformat='.0%')
     for trace in fig.data:
         trace.name = trace.name.replace('Cycling', '<b>Cycling</b>')
@@ -388,7 +389,7 @@ def add_description():
     ### **Methodology**
 
     <span style="font-size: 18px;"> The data on this page has been created by using the travel time matrix function of [R5R](https://github.com/ipeaGIT/r5r) to generate a 60 minute travel time matrix between the central coordinates of the 1 km x 1 km
-    [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html) and coordinates of [Finnish educational institutions](https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html). For more details on the spatial distribution of education see <b>1. Spatial distribution of opportunities </b> 🌍. Based on the created travel time matrix, minimum travel cost to closest facilities has been calculated by using the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility). In the calculation, all educational facilities are considered for each location, not just wihtin municipal boundaries. This is because people do not tend to move within just the boundaries of municipalities, but consider opportunities within their daily mobility areas.
+    [Finnish population grid](https://www.stat.fi/tup/ruututietokanta/index_en.html) and coordinates of [Finnish educational facilities](https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html). For more details on the spatial distribution of education see <b>1. Spatial distribution of opportunities </b> 🌍. Based on the created travel time matrix, minimum travel cost to closest facilities has been calculated by using the [accessibility package](https://ipeagit.github.io/accessibility/#accessibility). In the calculation, all educational facilities are considered for each location, not just wihtin municipal boundaries. This is because people do not tend to move within just the boundaries of municipalities, but consider opportunities within their daily mobility areas.
     </span>
     <br><br>
     <b style="font-size: 18px;">For cycling the following parameters were used:</b><br>
