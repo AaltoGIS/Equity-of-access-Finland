@@ -201,10 +201,10 @@ def add_description():
             <div style="margin-left: 20px;">Statistics Finland | https://www.stat.fi/org/avoindata/paikkatietoaineistot/oppilaitokset_en.html</div>
         </div>
         <br><br><br><br>
-        <div style="text-align: center;">
+        <div style="text-align: center;"">
         <i>Service hosted by GIST Lab, Aalto University. Licensed under CC-BY.</i>
         <br><br>
-        <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
+        <img style="align-items: center; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
         </div>
 
         

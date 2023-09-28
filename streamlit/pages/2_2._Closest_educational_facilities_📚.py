@@ -405,11 +405,17 @@ def add_description():
         <li>Maximum number of transfers per public transport trip: 1</li>
         <li>Maximum distance one can walk to access, egress or transfer on a public transport trip: 1 km (for each leg of the journey)</li>
     </ul>
+    
+    <b style="font-size: 18px;">Transportation network:</b><br> 
+    <ul>
+        <li>National public transport GTFS (2021):<i> Finnish environment institute, Traficom, Matkahuolto & Digitransit.</i></li>
+        <li>National transportation network (2022):<i> OpenStreetMap contributors, http://download.geofabrik.de/europe/finland.html</i></li>
+    </ul>
     <br><br>
-    <div style="text-align: center; margin-right: 80px"">
+    <div style="text-align: center;"">
     <i>Service hosted by GIST Lab, Aalto University. Licensed under CC-BY.</i>
     <br><br>
-    <img style="margin-left: 20px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
+    <img style="align-items: center; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
     </div>
 
 
@@ -446,6 +452,8 @@ def main():
             if fig is not None:
                 st.plotly_chart(fig, use_container_width=True, responsive=True)
         with col3:
+            st.markdown("""
+                        <h5 style="text-align: center; margin-top: 3px;">Administrative borders of selected area(s)</h5>""", unsafe_allow_html=True)
             with st.spinner(text="Loading map..."):
                 create_map(st.session_state.selected_municipalities)
 
