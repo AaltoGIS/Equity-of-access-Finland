@@ -443,6 +443,8 @@ def main():
             with col1:
                     st.plotly_chart(fig, use_container_width=True, responsive=True)
             with col3:
+                st.markdown("""
+                        <h5 style="text-align: center; margin-top: 3px;">Administrative borders of selected area(s)</h5>""", unsafe_allow_html=True)
                 with st.spinner(text="Loading map..."):
                     create_comparison_map()
     else:
