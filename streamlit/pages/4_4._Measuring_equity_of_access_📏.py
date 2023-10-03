@@ -5,7 +5,7 @@ import folium
 import numpy as np
 from streamlit_folium import folium_static
 import branca.colormap as cm
-from pages.utils import DATA_FOLDER
+from pages.utils import DATA_FOLDER, IMG_FOLDER
 
 def set_page():
     """
@@ -23,7 +23,7 @@ def set_page():
 
         ''', unsafe_allow_html=True)
     with col2:
-        st.image("streamlit/pictures/palma_picture.png", use_column_width=True)
+        st.image(str(IMG_FOLDER / "palma_picture.png"), use_column_width=True)
 
     st.markdown('''
     <i><b>Note:</b> In the map and table below some municipalities have 0 or inf values. When the values are inf, it means that there is no access for lower-income residents, but there is access for higher-income residents, resulting in inf values. On the other hand, when the value is 0, it means that there is no access for higher-income residents, but there is access for lower-income residents. Some municipalities are also not present, this is the case when there are not enough data points to present the different income deciles or there is no access with a particular mode.</i></span><br><br>
