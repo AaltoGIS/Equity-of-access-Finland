@@ -66,8 +66,8 @@ def filter_and_create_charts(municipalities):
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        selected_municipality = st.selectbox('Select area of interest', municipalities,)
-        selected_mode = st.selectbox('Select mode', ('','Public transport + 1 000 m walk', 'Bicycle'))
+        selected_municipality = st.selectbox('Select area of interest:', municipalities,)
+        selected_mode = st.selectbox('Select mode:', ('','Public transport + 1 000 m walk', 'Bicycle'))
 
     with col2:
         opportunity_type = st.selectbox("Select opportunity type:", ("","Pharmacy", "Grocery store", "Library", "Public sports facility", "School", "Healthcare", "Jobs"))

@@ -66,7 +66,7 @@ def filter_data(pt_data, cycling_data, grid):
 
     with col1:
         options = st.multiselect(
-            'Select municipalities', st.session_state.municipality, key='selected_municipalities'
+            'Select municipalities:', st.session_state.municipality, key='selected_municipalities'
         )
 
     # Filter data based on selected municipalities

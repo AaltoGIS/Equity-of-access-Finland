@@ -54,7 +54,6 @@ styles = [
     dict(selector="th", props=th_props),
     dict(selector="td", props=td_props),
     dict(selector="th:nth-child(1)", props=[('color', 'white')]),
-    dict(selector="td:nth-child(2)", props=[('font-weight', 'bold')]),
     dict(selector="th:nth-child(2)", props=[('background-color', '#DD6E82'), ('color', 'white')]),
     dict(selector="th:nth-child(3)", props=[('background-color', '#4A6FE3'), ('color', 'white')]),
     dict(selector="table, th, td", props=[('border', '1px solid white')])
