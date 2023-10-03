@@ -14,10 +14,19 @@ def set_page():
     st.set_page_config(page_title="Equity of access", 
     layout="wide", 
     initial_sidebar_state="expanded")
-    st.markdown('''
-    ### **Measuring equity of access** 📏
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.markdown('''
+        ### **Measuring equity of access** 📏
 
-    <span style="font-size: 18px;">This tool allows you to compare the equity of access between different municipalities in Finland, by using Palma ratio. The Palma ratio is calculated using the national cumulative accessibility distribution of opportunities (found on page <b>3. Cumulative access of opportunities </b>🚌) and mean income of population within each 1 km x 1 km grid cell. Results are aggregated on a municipal level. In this context the ratio measures the average accessibility of the top 10 % income residents within a municipality divided by the average accessibility of the bottom 40 % income residents. A higher Palma ratio indicates greater equity difference in access when income changes. Values higher than 1 indicate that the top 10 % income residents have better access than the bottom 40 % income residents. For example, if a Palma ratio is 10 it indicates that the wealthiest have 10 times better access than the poorest. Values below 1 indicates that the bottom 40 % income residents have better access. A ratio of 1 indicates that the access is at an equilibrium (in many cases this usually means there are no access with the particular modes).<br><br><i><b>Note:</b> In the map and table below some municipalities have 0 or inf values. When the values are inf, it means that there is no access for lower-income residents, but there is access for higher-income residents, resulting in inf values. On the other hand, when the value is 0, it means that there is no access for higher-income residents, but there is access for lower-income residents. Some municipalities are also not present, this is the case when there are not enough data points to present the different income deciles or there is no access with a particular mode.</i></span><br><br>
+        <span style="font-size: 18px;">This tool allows you to compare the equity of access between different municipalities in Finland, by using Palma ratio. The Palma ratio is calculated using the national cumulative accessibility distribution of opportunities (found on page <b>3. Cumulative access of opportunities </b>🚌) and mean income of population within each 1 km x 1 km grid cell. Results are aggregated on a municipal level. In this context the ratio measures the average accessibility of the top 10 % income residents within a municipality divided by the average accessibility of the bottom 40 % income residents. A higher Palma ratio indicates greater equity difference in access when income changes. Values higher than 1 indicate that the top 10 % income residents have better access than the bottom 40 % income residents. For example, if a Palma ratio is 10 it indicates that the wealthiest have 10 times better access than the poorest. Values below 1 indicates that the bottom 40 % income residents have better access. A ratio of 1 indicates that the access is at an equilibrium (in many cases this usually means there are no access with the particular modes).
+
+        ''', unsafe_allow_html=True)
+    with col2:
+        st.image("streamlit/pictures/palma_picture.png", use_column_width=True)
+
+    st.markdown('''
+    <i><b>Note:</b> In the map and table below some municipalities have 0 or inf values. When the values are inf, it means that there is no access for lower-income residents, but there is access for higher-income residents, resulting in inf values. On the other hand, when the value is 0, it means that there is no access for higher-income residents, but there is access for lower-income residents. Some municipalities are also not present, this is the case when there are not enough data points to present the different income deciles or there is no access with a particular mode.</i></span><br><br>
 
     ''', unsafe_allow_html=True)
 
