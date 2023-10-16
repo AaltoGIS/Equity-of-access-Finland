@@ -296,21 +296,19 @@ def create_map(selected_municipalities):
         municipality_polygons = gpd.read_parquet(DATA_FOLDER / 'kunnat2023.parquet')
         municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
         filtered_polygons = municipality_polygons[municipality_polygons['nimi'].isin(selected_municipalities)]
-        zoom_level = 7
     else:
         finland_polygons = gpd.read_file(DATA_FOLDER / 'suomi.gpkg')
         finland_polygons = finland_polygons.to_crs('EPSG:4326')
         filtered_polygons = finland_polygons
-        zoom_level = 4
+    
+    bounds = filtered_polygons.geometry.unary_union.bounds
     centroid = filtered_polygons.geometry.unary_union.centroid
-    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles="cartodbpositron")
+    m = folium.Map(location=[centroid.y, centroid.x], tiles="cartodbpositron")
+    m.fit_bounds([(bounds[1], bounds[0]), (bounds[3], bounds[2])])
 
-    # Add filtered polygons to map
     geojson = folium.GeoJson(filtered_polygons, style_function=style_polygon, highlight_function=highlight_polygon).add_to(m)
-    # Add tooltip to display 'nimi' attribute on hover
     geojson.add_child(folium.features.GeoJsonTooltip(fields=['nimi'], aliases=['']))
     responsive_to_window_width()
-    # Display map
     folium_static(m, height=500)
 
 def style_polygon(_):
@@ -336,18 +334,15 @@ def create_comparison_map():
     municipality_polygons = gpd.read_parquet(DATA_FOLDER / 'kunnat2023.parquet')
     municipality_polygons = municipality_polygons.to_crs('EPSG:4326')
 
-    # Select municipalities where the field in 'nimi' is same in municipality and municipality polygons and insert it to filtered_polygons
     filtered_polygons = municipality_polygons[municipality_polygons['nimi'].isin(st.session_state.selected_municipalities1 + st.session_state.selected_municipalities2)]
-    zoom_level = 5
+    bounds = filtered_polygons.geometry.unary_union.bounds
     centroid = filtered_polygons.geometry.unary_union.centroid
-    m = folium.Map(location=[centroid.y, centroid.x], zoom_start=zoom_level, tiles="cartodbpositron")
+    m = folium.Map(location=[centroid.y, centroid.x], tiles="cartodbpositron")
+    m.fit_bounds([(bounds[1], bounds[0]), (bounds[3], bounds[2])])
 
-    # Add filtered polygons to map
     geojson = folium.GeoJson(filtered_polygons, style_function=style_comparison_polygon, highlight_function=highlight_comparison_polygon).add_to(m)
-    # Add tooltip to display 'nimi' attribute on hover
     geojson.add_child(folium.features.GeoJsonTooltip(fields=['nimi'], aliases=['Municipality:']))
     responsive_to_window_width()
-    # Display map
     folium_static(m, height=500)
 
 def highlight_comparison_polygon(feature):
