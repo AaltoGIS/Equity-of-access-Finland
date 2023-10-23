@@ -2,3 +2,4 @@ streamlit/data/
 .idea
 __pycache__
 docker-test/
+.streamlit/secrets.toml
