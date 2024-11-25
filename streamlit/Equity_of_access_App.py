@@ -23,7 +23,9 @@ st.markdown("""
    <h2 style="margin: 0;">Measuring equity of access in Finland with open-source GIS-tools</h2>
    <img style="margin-left: 20px; margin-bottom: 8px;" src="https://raw.githubusercontent.com/ipeaGIT/r5r/master/r-package/man/figures/r5r_blue.png" width="100" height="110">
  </div>
- <span style="font-size: 18px;">This app was developed to showcase some of the capabilities of open-source GIS-tools and the national datasets produced for the research paper <i>Measuring equity of access in Finland with open-source GIS-tools</i>. With the app you can analyze the disparity and sufficiency of accessibility in a national context and explore the distribution of different opportunities and services that most people consider necessities in their daily lives. You have also the possibility to compare access differences between Finnish municipalities and investigate the number of opportunities accessible by public transport or bicycle within certain travel time thresholds. Additionally, you have the possibility to use this tool to analyze the equity of access differences between municipalities.</span>
+ <span style="font-size: 18px;">This app was developed to showcase some of the capabilities of open-source GIS-tools and the national datasets produced for the research paper <i>Spatial accessibility and transport inequity in Finland: Open source models and perspectives from planning practice</i>. With the app you can analyze the disparity and sufficiency of accessibility in a national context and explore the distribution of different opportunities and services that most people consider necessities in their daily lives. You have also the possibility to compare access differences between Finnish municipalities and investigate the number of opportunities accessible by public transport or bicycle within certain travel time thresholds. Additionally, you have the possibility to use this tool to analyze the equity of access differences between municipalities.</span>
+<br><br>
+ <span style="font-size: 18px;">Pönkänen, M., H. Tenkanen & M. Mladenović (2025). Spatial accessibility and transport inequity in Finland: Open source models and perspectives from planning practice. <i>Computers, Environment and Urban Systems</i>, 116, 102218,https://doi.org/10.1016/j.compenvurbsys.2024.102218</span>
 <br><br>
 <h4 style="margin-left: -10px;">👈 From the sidebar you can start to explore different datasets produced for the research paper.</h4>
 <br><br><br>
@@ -33,19 +35,19 @@ st.markdown("""
 <br>
 <div class="author-container" style="display: flex; align-items: center; justify-content: center;">
    <div class="author" style="display: flex; flex-direction: column; align-items: center; margin-right: 80px;">
-     <img src="https://www.flou.io/img/ner_5277.jpg" style="border-radius: 50%; width: 150px; height: 150px;">
+     <img src="https://raw.githubusercontent.com/AaltoGIS/Equity-of-access-Finland/refs/heads/master/streamlit/pictures/matti_photo.png" style="border-radius: 50%; width: 150px; height: 150px;">
      <span style="margin-top: 15px;"><b>Matti Pönkänen</b>
-            <br>FLOU ltd <a href="https://www.linkedin.com/in/matti-p%C3%B6nk%C3%A4nen-476040174/" target="_blank"><i class="fas fa-link" style="font-size: 18px; margin-top: 2px; color: lightgrey"></i></a> 
+            <br>Helsinki Region Transport <a href="https://www.linkedin.com/in/matti-p%C3%B6nk%C3%A4nen-476040174/" target="_blank"><i class="fas fa-link" style="font-size: 18px; margin-top: 2px; color: lightgrey"></i></a> 
      </span>
    </div>
    <div class="author" style="display: flex; flex-direction: column; align-items: center; margin-right: 80px;">
-     <img src="https://people.aalto.fi/files/1213981_x_512_3to4.jpg" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover; object-position: 50% 35%;">
+     <img src="https://raw.githubusercontent.com/AaltoGIS/Equity-of-access-Finland/refs/heads/master/streamlit/pictures/henrikki_photo.png" style="border-radius: 50%; width: 150px; height: 150px; object-fit: cover; object-position: 50% 35%;">
      <span style="margin-top: 15px;"><b>Henrikki Tenkanen</b>
             <br>Aalto University <a href="https://research.aalto.fi/fi/persons/henrikki-tenkanen" target="_blank"><i class="fas fa-link" style="font-size: 18px; margin-top: 2px; color: lightgrey"></i></a> 
      </span>
    </div>
    <div div class="author" style="display: flex; flex-direction: column; align-items:center; margin-right: 80px">
-     <img src="https://media.licdn.com/dms/image/D4D03AQGxOHqmGuOjJw/profile-displayphoto-shrink_400_400/0/1683380472067?e=1699488000&v=beta&t=YE6pMorFf3PaF_5XEhofVikjyFSBkUalUPVGTBjjMg8" style="border-radius:50%; width: 150px; height: 150px; object-fit: cover;">
+     <img src="https://raw.githubusercontent.com/AaltoGIS/Equity-of-access-Finland/refs/heads/master/streamlit/pictures/milos_photo.png" style="border-radius:50%; width: 150px; height: 150px; object-fit: cover;">
      <span style="margin-top: 15px;"><b>Miloš Mladenović</b>
             <br>Aalto University <a href="https://research.aalto.fi/en/persons/milos-mladenovic" target="_blank"><i class="fas fa-link" style="font-size: 18px; margin-top: 2px; color: lightgrey"></i></a> 
      </span>
