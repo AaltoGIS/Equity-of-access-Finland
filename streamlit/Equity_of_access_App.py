@@ -58,7 +58,7 @@ st.markdown("""
 
  <br><br>
  <div style="text-align: center; margin-right: 80px">
-  <i>Service hosted by <a href="https://gistlab.science">GIST Lab</a>, Aalto University. Licensed under CC-BY.</i>
+  <i>Service hosted by <a href="https://gistlab.science">GIST Lab</a>, Aalto University. Licensed under MIT.</i>
   <br><br>
   <img style="margin-right: 0px; margin-bottom: 8px;" src="https://gistlab.science/wp-content/uploads/2023/08/Aalto_logo_black.png" width="300">
  </div>
