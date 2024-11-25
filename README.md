@@ -16,3 +16,5 @@ This website and online tool is part of the following article. Please cite the w
 
 - Matti Pönkänen, Helsinki Region Transport / Aalto University
 - Henrikki Tenkanen, Aalto University
+
+Service hosted by [GIST Lab](https://gistlab.science), Aalto University. Licensed under CC-BY.
